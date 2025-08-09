@@ -6,12 +6,11 @@ export default function TopBar() {
     <div className="h-14 bg-card border-b border-border flex items-center justify-between px-4">
       {/* Left: Logo/Title */}
       <div className="flex items-center space-x-4">
-        <h1 className="font-bold text-lg">AlgoBacktest Pro</h1>
+        <h1 className="text-lg font-extrabold bg-[#00c3ff00] text-[#bd1c00]">Qbacktest</h1>
         <div className="text-sm text-muted-foreground">
           Strategy: Momentum Scalper v1.2
         </div>
       </div>
-
       {/* Center: Backtest Controls */}
       <div className="flex items-center space-x-2">
         <Button size="sm" className="bg-green-600 hover:bg-green-700">
@@ -27,7 +26,6 @@ export default function TopBar() {
           Reset
         </Button>
       </div>
-
       {/* Right: Status & Settings */}
       <div className="flex items-center space-x-4">
         <div className="text-sm">
