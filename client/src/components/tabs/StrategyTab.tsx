@@ -2,6 +2,9 @@ import CodeEditor from "@/components/CodeEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function StrategyTab() {
   const sampleStrategy = `// Strategy: Maker Queue Aware
@@ -50,12 +53,13 @@ function calculateImbalance(book) {
       </div>
 
       {/* Strategy Configuration */}
-      <div className="w-80 bg-card">
+      <div className="w-80 bg-card flex flex-col">
         <div className="p-3 border-b border-border bg-muted">
           <h4 className="font-semibold">Strategy Configuration</h4>
         </div>
         
-        <div className="p-4 space-y-6">
+        <ScrollArea className="flex-1">
+          <div className="p-4 space-y-6">
           {/* Strategy Metadata */}
           <div>
             <h5 className="font-medium mb-3">Strategy Metadata</h5>
@@ -135,7 +139,8 @@ function calculateImbalance(book) {
               </div>
             </div>
           </div>
-        </div>
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

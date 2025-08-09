@@ -1,4 +1,5 @@
-import { ChevronDown, ChevronRight, Database, Code, Brain, FlaskConical, FileText } from "lucide-react";
+import { ChevronDown, ChevronRight, Database, Code, Brain, FlaskConical, FileText, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -51,8 +52,20 @@ export default function LeftSidebar() {
 
   return (
     <div className="w-64 bg-card border-r border-border">
-      <div className="p-3 border-b border-border">
+      <div className="p-3 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-sm">Navigator</h3>
+        <Button 
+          size="sm" 
+          variant="ghost" 
+          className="h-6 w-6 p-0"
+          onClick={() => {
+            // This will trigger the dataset upload modal
+            const event = new CustomEvent('openDatasetUpload');
+            window.dispatchEvent(event);
+          }}
+        >
+          <Plus className="w-4 h-4" />
+        </Button>
       </div>
       
       <ScrollArea className="h-full">
