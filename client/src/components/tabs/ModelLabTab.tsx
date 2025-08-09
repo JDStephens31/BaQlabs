@@ -467,8 +467,74 @@ export default function ModelLabTab() {
                   <CardTitle>Feature Correlation Matrix</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-64 w-full bg-muted rounded-lg flex items-center justify-center">
-                    <div className="text-muted-foreground">Feature correlation heatmap visualization</div>
+                  <div className="h-64 w-full bg-white rounded border relative overflow-hidden">
+                    <svg width="100%" height="256" className="absolute inset-0">
+                      <defs>
+                        <linearGradient id="correlationGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#dc2626" />
+                          <stop offset="50%" stopColor="#ffffff" />
+                          <stop offset="100%" stopColor="#16a34a" />
+                        </linearGradient>
+                      </defs>
+
+                      {/* Feature labels */}
+                      {["Price", "Volume", "RSI", "MACD", "BB", "Sentiment"].map((feature, i) => (
+                        <g key={i}>
+                          <text x="35" y={45 + i * 35} fontSize="11" fill="#374151" textAnchor="end">{feature}</text>
+                          <text x={55 + i * 35} y="25" fontSize="11" fill="#374151" textAnchor="middle" transform={`rotate(-45, ${55 + i * 35}, 25)`}>{feature}</text>
+                        </g>
+                      ))}
+
+                      {/* Correlation matrix cells */}
+                      {Array.from({ length: 6 }, (_, i) => 
+                        Array.from({ length: 6 }, (_, j) => {
+                          const correlation = i === j ? 1 : (Math.random() - 0.5) * 2;
+                          const intensity = Math.abs(correlation);
+                          const color = correlation > 0 ? `rgba(34, 197, 94, ${intensity})` : `rgba(220, 38, 38, ${intensity})`;
+                          
+                          return (
+                            <g key={`${i}-${j}`}>
+                              <rect
+                                x={45 + j * 35}
+                                y={35 + i * 35}
+                                width="30"
+                                height="30"
+                                fill={color}
+                                stroke="#e5e7eb"
+                                strokeWidth="1"
+                              />
+                              <text
+                                x={60 + j * 35}
+                                y={53 + i * 35}
+                                fontSize="9"
+                                fill={intensity > 0.5 ? "white" : "black"}
+                                textAnchor="middle"
+                                fontWeight="bold"
+                              >
+                                {correlation.toFixed(2)}
+                              </text>
+                            </g>
+                          );
+                        })
+                      )}
+
+                      {/* Legend */}
+                      <g transform="translate(280, 50)">
+                        <rect x="0" y="0" width="120" height="80" fill="white" stroke="#e5e7eb" rx="4" fillOpacity="0.95"/>
+                        <text x="10" y="15" fontSize="11" fill="#374151" fontWeight="bold">Correlation</text>
+                        
+                        <rect x="10" y="25" width="15" height="8" fill="rgba(220, 38, 38, 0.8)"/>
+                        <text x="30" y="32" fontSize="9" fill="#374151">Strong Negative</text>
+                        
+                        <rect x="10" y="40" width="15" height="8" fill="rgba(255, 255, 255, 0.8)" stroke="#e5e7eb"/>
+                        <text x="30" y="47" fontSize="9" fill="#374151">No Correlation</text>
+                        
+                        <rect x="10" y="55" width="15" height="8" fill="rgba(34, 197, 94, 0.8)"/>
+                        <text x="30" y="62" fontSize="9" fill="#374151">Strong Positive</text>
+                        
+                        <text x="10" y="75" fontSize="8" fill="#6b7280">Range: -1.0 to +1.0</text>
+                      </g>
+                    </svg>
                   </div>
                 </CardContent>
               </Card>
@@ -529,8 +595,44 @@ export default function ModelLabTab() {
                     <CardTitle>Confusion Matrix</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-48 w-full bg-muted rounded-lg flex items-center justify-center">
-                      <div className="text-muted-foreground">Confusion matrix visualization</div>
+                    <div className="h-48 w-full bg-white rounded border relative overflow-hidden">
+                      <svg width="100%" height="192" className="absolute inset-0">
+                        {/* Confusion Matrix Grid */}
+                        <g transform="translate(80, 40)">
+                          {/* Matrix cells */}
+                          <rect x="0" y="0" width="60" height="60" fill="#22c55e" fillOpacity="0.8" stroke="white" strokeWidth="2"/>
+                          <text x="30" y="35" fontSize="16" fill="white" textAnchor="middle" fontWeight="bold">847</text>
+                          <text x="30" y="50" fontSize="10" fill="white" textAnchor="middle">True Pos</text>
+                          
+                          <rect x="60" y="0" width="60" height="60" fill="#ef4444" fillOpacity="0.6" stroke="white" strokeWidth="2"/>
+                          <text x="90" y="35" fontSize="16" fill="white" textAnchor="middle" fontWeight="bold">153</text>
+                          <text x="90" y="50" fontSize="10" fill="white" textAnchor="middle">False Neg</text>
+                          
+                          <rect x="0" y="60" width="60" height="60" fill="#ef4444" fillOpacity="0.4" stroke="white" strokeWidth="2"/>
+                          <text x="30" y="95" fontSize="16" fill="black" textAnchor="middle" fontWeight="bold">89</text>
+                          <text x="30" y="110" fontSize="10" fill="black" textAnchor="middle">False Pos</text>
+                          
+                          <rect x="60" y="60" width="60" height="60" fill="#22c55e" fillOpacity="0.6" stroke="white" strokeWidth="2"/>
+                          <text x="90" y="95" fontSize="16" fill="white" textAnchor="middle" fontWeight="bold">911</text>
+                          <text x="90" y="110" fontSize="10" fill="white" textAnchor="middle">True Neg</text>
+                        </g>
+                        
+                        {/* Labels */}
+                        <text x="20" y="80" fontSize="12" fill="#374151" fontWeight="bold" textAnchor="middle" transform="rotate(-90, 20, 80)">Actual</text>
+                        <text x="140" y="30" fontSize="12" fill="#374151" fontWeight="bold" textAnchor="middle">Predicted</text>
+                        
+                        <text x="50" y="30" fontSize="10" fill="#6b7280" textAnchor="middle">Positive</text>
+                        <text x="110" y="30" fontSize="10" fill="#6b7280" textAnchor="middle">Negative</text>
+                        <text x="20" y="75" fontSize="10" fill="#6b7280" textAnchor="middle" transform="rotate(-90, 20, 75)">Pos</text>
+                        <text x="20" y="135" fontSize="10" fill="#6b7280" textAnchor="middle" transform="rotate(-90, 20, 135)">Neg</text>
+                        
+                        {/* Accuracy metrics */}
+                        <text x="250" y="60" fontSize="11" fill="#374151" fontWeight="bold">Accuracy: 87.9%</text>
+                        <text x="250" y="80" fontSize="10" fill="#6b7280">Precision: 82.1%</text>
+                        <text x="250" y="95" fontSize="10" fill="#6b7280">Recall: 79.6%</text>
+                        <text x="250" y="110" fontSize="10" fill="#6b7280">F1-Score: 80.8%</text>
+                        <text x="250" y="125" fontSize="10" fill="#6b7280">Total: 2000 samples</text>
+                      </svg>
                     </div>
                   </CardContent>
                 </Card>
@@ -540,8 +642,71 @@ export default function ModelLabTab() {
                     <CardTitle>ROC Curve</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-48 w-full bg-muted rounded-lg flex items-center justify-center">
-                      <div className="text-muted-foreground">ROC curve (AUC: 0.876)</div>
+                    <div className="h-48 w-full bg-white rounded border relative overflow-hidden">
+                      <svg width="100%" height="192" className="absolute inset-0">
+                        {/* Grid */}
+                        {[0, 1, 2, 3, 4, 5].map(i => (
+                          <g key={i}>
+                            <line x1="40" y1={30 + i * 25} x2="280" y2={30 + i * 25} stroke="#e5e7eb" strokeWidth="0.5" />
+                            <text x="35" y={35 + i * 25} fontSize="9" fill="#6b7280" textAnchor="end">
+                              {(1 - i * 0.2).toFixed(1)}
+                            </text>
+                          </g>
+                        ))}
+                        {[0, 1, 2, 3, 4, 5].map(i => (
+                          <g key={i}>
+                            <line x1={40 + i * 48} y1="30" x2={40 + i * 48} y2="155" stroke="#e5e7eb" strokeWidth="0.5" />
+                            <text x={40 + i * 48} y="170" fontSize="9" fill="#6b7280" textAnchor="middle">
+                              {(i * 0.2).toFixed(1)}
+                            </text>
+                          </g>
+                        ))}
+                        
+                        {/* Diagonal reference line (random classifier) */}
+                        <line x1="40" y1="155" x2="280" y2="30" stroke="#9ca3af" strokeWidth="1" strokeDasharray="4,4" />
+                        
+                        {/* ROC Curve */}
+                        <path
+                          d="M40,155 Q80,140 120,110 Q160,70 200,50 Q240,35 280,30"
+                          stroke="#3b82f6"
+                          strokeWidth="3"
+                          fill="none"
+                        />
+                        
+                        {/* Area under curve (light blue fill) */}
+                        <path
+                          d="M40,155 Q80,140 120,110 Q160,70 200,50 Q240,35 280,30 L280,155 L40,155 Z"
+                          fill="#3b82f6"
+                          fillOpacity="0.1"
+                        />
+                        
+                        {/* Key points on curve */}
+                        {[
+                          {x: 40, y: 155, tpr: 0.0, fpr: 0.0},
+                          {x: 88, y: 125, tpr: 0.3, fpr: 0.1},
+                          {x: 136, y: 85, tpr: 0.7, fpr: 0.2},
+                          {x: 184, y: 55, tpr: 0.85, fpr: 0.3},
+                          {x: 232, y: 40, tpr: 0.95, fpr: 0.4},
+                          {x: 280, y: 30, tpr: 1.0, fpr: 1.0}
+                        ].map((point, i) => (
+                          <circle key={i} cx={point.x} cy={point.y} r="3" fill="#3b82f6" stroke="white" strokeWidth="1"/>
+                        ))}
+                        
+                        {/* Labels */}
+                        <text x="40" y="20" fontSize="11" fill="#374151" fontWeight="bold">True Positive Rate</text>
+                        <text x="160" y="185" fontSize="11" fill="#374151" fontWeight="bold">False Positive Rate</text>
+                        
+                        {/* AUC display */}
+                        <g transform="translate(200, 120)">
+                          <rect x="0" y="0" width="70" height="30" fill="white" stroke="#e5e7eb" rx="4" fillOpacity="0.95"/>
+                          <text x="35" y="12" fontSize="10" fill="#374151" fontWeight="bold" textAnchor="middle">AUC</text>
+                          <text x="35" y="24" fontSize="12" fill="#3b82f6" fontWeight="bold" textAnchor="middle">0.876</text>
+                        </g>
+                        
+                        {/* Perfect classifier reference */}
+                        <text x="50" y="45" fontSize="8" fill="#6b7280">Perfect (AUC=1.0)</text>
+                        <text x="200" y="140" fontSize="8" fill="#6b7280">Random (AUC=0.5)</text>
+                      </svg>
                     </div>
                   </CardContent>
                 </Card>

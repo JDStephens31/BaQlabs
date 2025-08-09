@@ -252,6 +252,104 @@ export default function LatencyLabTab() {
             </TabsContent>
 
             <TabsContent value="network" className="space-y-4">
+              {/* Network Topology Visualization */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Network Topology & Latency Map</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 w-full bg-white rounded border relative overflow-hidden">
+                    <svg width="100%" height="256" className="absolute inset-0">
+                      <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                          <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280" />
+                        </marker>
+                        <linearGradient id="latencyGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#22c55e" />
+                          <stop offset="100%" stopColor="#eab308" />
+                        </linearGradient>
+                        <linearGradient id="latencyGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#eab308" />
+                          <stop offset="100%" stopColor="#ef4444" />
+                        </linearGradient>
+                      </defs>
+
+                      {/* Network connections with latency visualization */}
+                      {/* Trading System to Co-location */}
+                      <line x1="100" y1="120" x2="200" y2="120" stroke="url(#latencyGradient1)" strokeWidth="4" markerEnd="url(#arrowhead)" />
+                      <text x="150" y="110" fontSize="10" fill="#16a34a" textAnchor="middle" fontWeight="bold">12μs</text>
+                      
+                      {/* Co-location to Exchange */}
+                      <line x1="200" y1="120" x2="350" y2="120" stroke="url(#latencyGradient1)" strokeWidth="4" markerEnd="url(#arrowhead)" />
+                      <text x="275" y="110" fontSize="10" fill="#16a34a" textAnchor="middle" fontWeight="bold">35μs</text>
+                      
+                      {/* Exchange to Market Data */}
+                      <line x1="350" y1="90" x2="450" y2="60" stroke="url(#latencyGradient1)" strokeWidth="3" markerEnd="url(#arrowhead)" />
+                      <text x="400" y="70" fontSize="10" fill="#16a34a" textAnchor="middle" fontWeight="bold">8μs</text>
+                      
+                      {/* Alternative routes with higher latency */}
+                      <path d="M 100 140 Q 200 180 350 140" stroke="url(#latencyGradient2)" strokeWidth="2" fill="none" strokeDasharray="4,4" markerEnd="url(#arrowhead)" />
+                      <text x="225" y="175" fontSize="9" fill="#dc2626" textAnchor="middle">Backup: 145μs</text>
+                      
+                      {/* Internet route */}
+                      <path d="M 100 160 Q 300 220 500 160" stroke="#ef4444" strokeWidth="2" fill="none" strokeDasharray="8,4" markerEnd="url(#arrowhead)" />
+                      <text x="300" y="215" fontSize="9" fill="#dc2626" textAnchor="middle">Internet: 850μs</text>
+
+                      {/* Network nodes */}
+                      <g transform="translate(85, 105)">
+                        <rect x="0" y="0" width="30" height="30" rx="4" fill="#3b82f6" stroke="white" strokeWidth="2"/>
+                        <text x="15" y="20" fontSize="8" fill="white" textAnchor="middle" fontWeight="bold">SYS</text>
+                        <text x="15" y="45" fontSize="10" fill="#374151" textAnchor="middle" fontWeight="bold">Trading System</text>
+                      </g>
+                      
+                      <g transform="translate(185, 105)">
+                        <rect x="0" y="0" width="30" height="30" rx="4" fill="#10b981" stroke="white" strokeWidth="2"/>
+                        <text x="15" y="20" fontSize="8" fill="white" textAnchor="middle" fontWeight="bold">COL</text>
+                        <text x="15" y="45" fontSize="10" fill="#374151" textAnchor="middle" fontWeight="bold">Co-location</text>
+                      </g>
+                      
+                      <g transform="translate(335, 105)">
+                        <rect x="0" y="0" width="30" height="30" rx="4" fill="#f59e0b" stroke="white" strokeWidth="2"/>
+                        <text x="15" y="20" fontSize="8" fill="white" textAnchor="middle" fontWeight="bold">CME</text>
+                        <text x="15" y="45" fontSize="10" fill="#374151" textAnchor="middle" fontWeight="bold">Exchange</text>
+                      </g>
+                      
+                      <g transform="translate(435, 45)">
+                        <rect x="0" y="0" width="30" height="30" rx="4" fill="#8b5cf6" stroke="white" strokeWidth="2"/>
+                        <text x="15" y="20" fontSize="8" fill="white" textAnchor="middle" fontWeight="bold">MD</text>
+                        <text x="15" y="45" fontSize="10" fill="#374151" textAnchor="middle" fontWeight="bold">Market Data</text>
+                      </g>
+                      
+                      <g transform="translate(485, 145)">
+                        <rect x="0" y="0" width="30" height="30" rx="4" fill="#ef4444" stroke="white" strokeWidth="2"/>
+                        <text x="15" y="20" fontSize="8" fill="white" textAnchor="middle" fontWeight="bold">NET</text>
+                        <text x="15" y="45" fontSize="10" fill="#374151" textAnchor="middle" fontWeight="bold">Internet</text>
+                      </g>
+
+                      {/* Legend */}
+                      <g transform="translate(550, 30)">
+                        <rect x="0" y="0" width="150" height="100" fill="white" stroke="#e5e7eb" rx="4" fillOpacity="0.95"/>
+                        <text x="10" y="15" fontSize="11" fill="#374151" fontWeight="bold">Latency Paths</text>
+                        
+                        <line x1="10" y1="25" x2="30" y2="25" stroke="#22c55e" strokeWidth="3"/>
+                        <text x="35" y="28" fontSize="9" fill="#374151">Optimal (&lt;50μs)</text>
+                        
+                        <line x1="10" y1="40" x2="30" y2="40" stroke="#eab308" strokeWidth="3"/>
+                        <text x="35" y="43" fontSize="9" fill="#374151">Warning (50-150μs)</text>
+                        
+                        <line x1="10" y1="55" x2="30" y2="55" stroke="#ef4444" strokeWidth="2" strokeDasharray="4,4"/>
+                        <text x="35" y="58" fontSize="9" fill="#374151">Backup (150μs+)</text>
+                        
+                        <line x1="10" y1="70" x2="30" y2="70" stroke="#ef4444" strokeWidth="2" strokeDasharray="8,4"/>
+                        <text x="35" y="73" fontSize="9" fill="#374151">Internet (800μs+)</text>
+                        
+                        <text x="10" y="90" fontSize="9" fill="#6b7280">Total Path: ~55μs</text>
+                      </g>
+                    </svg>
+                  </div>
+                </CardContent>
+              </Card>
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Network Configuration */}
                 <Card>
@@ -344,8 +442,38 @@ export default function LatencyLabTab() {
                         </div>
                       </div>
 
-                      <div className="h-32 w-full bg-muted rounded-lg flex items-center justify-center">
-                        <div className="text-muted-foreground text-sm">Real-time latency chart</div>
+                      <div className="h-32 w-full bg-white rounded border relative overflow-hidden">
+                        <svg width="100%" height="128" className="absolute inset-0">
+                          {/* Grid lines */}
+                          {[0, 1, 2, 3].map(i => (
+                            <line key={i} x1="0" y1={i * 32} x2="100%" y2={i * 32} stroke="#e5e7eb" strokeWidth="0.5" />
+                          ))}
+                          
+                          {/* Real-time latency line */}
+                          <path
+                            d={`M 0 ${64 + Math.sin(0) * 20} ${Array.from({ length: 50 }, (_, i) => {
+                              const x = (i / 50) * 400;
+                              const y = 64 + Math.sin(i * 0.2) * 15 + (Math.random() - 0.5) * 10;
+                              return `L ${x} ${y}`;
+                            }).join(' ')}`}
+                            stroke="#22c55e"
+                            strokeWidth="2"
+                            fill="none"
+                          />
+                          
+                          {/* Threshold lines */}
+                          <line x1="0" y1="48" x2="100%" y2="48" stroke="#eab308" strokeWidth="1" strokeDasharray="2,2" />
+                          <line x1="0" y1="32" x2="100%" y2="32" stroke="#ef4444" strokeWidth="1" strokeDasharray="2,2" />
+                          
+                          {/* Current value indicator */}
+                          <circle cx="380" cy="58" r="3" fill="#22c55e" stroke="white" strokeWidth="1"/>
+                          
+                          {/* Labels */}
+                          <text x="10" y="15" fontSize="10" fill="#6b7280">200μs</text>
+                          <text x="10" y="35" fontSize="10" fill="#6b7280">150μs</text>
+                          <text x="10" y="75" fontSize="10" fill="#6b7280">100μs</text>
+                          <text x="350" y="120" fontSize="10" fill="#6b7280">Last 60s</text>
+                        </svg>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2 text-xs">
@@ -429,14 +557,98 @@ export default function LatencyLabTab() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-medium mb-3">Latency vs Fill Rate</h4>
-                      <div className="h-48 w-full bg-muted rounded-lg flex items-center justify-center">
-                        <div className="text-muted-foreground text-sm">Latency impact on fill rates</div>
+                      <div className="h-48 w-full bg-white rounded border relative overflow-hidden">
+                        <svg width="100%" height="192" className="absolute inset-0">
+                          {/* Grid */}
+                          {[0, 1, 2, 3, 4, 5].map(i => (
+                            <g key={i}>
+                              <line x1="40" y1={30 + i * 25} x2="350" y2={30 + i * 25} stroke="#e5e7eb" strokeWidth="0.5" />
+                              <text x="35" y={35 + i * 25} fontSize="9" fill="#6b7280" textAnchor="end">
+                                {100 - i * 5}%
+                              </text>
+                            </g>
+                          ))}
+                          {[0, 1, 2, 3, 4, 5, 6].map(i => (
+                            <g key={i}>
+                              <line x1={40 + i * 50} y1="30" x2={40 + i * 50} y2="155" stroke="#e5e7eb" strokeWidth="0.5" />
+                              <text x={40 + i * 50} y="170" fontSize="9" fill="#6b7280" textAnchor="middle">
+                                {50 + i * 50}μs
+                              </text>
+                            </g>
+                          ))}
+                          
+                          {/* Fill rate curve (decreasing with latency) */}
+                          <path
+                            d="M40,35 Q90,40 140,50 Q190,65 240,85 Q290,110 340,140"
+                            stroke="#3b82f6"
+                            strokeWidth="3"
+                            fill="none"
+                          />
+                          
+                          {/* Data points */}
+                          {[
+                            {x: 40, y: 35, latency: 50, rate: 98.5},
+                            {x: 90, y: 42, latency: 100, rate: 96.2},
+                            {x: 140, y: 52, latency: 150, rate: 94.2},
+                            {x: 190, y: 67, latency: 200, rate: 91.8},
+                            {x: 240, y: 87, latency: 250, rate: 88.1},
+                            {x: 290, y: 112, latency: 300, rate: 83.5}
+                          ].map((point, i) => (
+                            <circle key={i} cx={point.x} cy={point.y} r="3" fill="#3b82f6" stroke="white" strokeWidth="1"/>
+                          ))}
+                          
+                          {/* Labels */}
+                          <text x="40" y="20" fontSize="11" fill="#374151" fontWeight="bold">Fill Rate %</text>
+                          <text x="200" y="185" fontSize="11" fill="#374151" fontWeight="bold">Latency (μs)</text>
+                        </svg>
                       </div>
                     </div>
                     <div>
                       <h4 className="font-medium mb-3">Latency vs Slippage</h4>
-                      <div className="h-48 w-full bg-muted rounded-lg flex items-center justify-center">
-                        <div className="text-muted-foreground text-sm">Latency impact on slippage</div>
+                      <div className="h-48 w-full bg-white rounded border relative overflow-hidden">
+                        <svg width="100%" height="192" className="absolute inset-0">
+                          {/* Grid */}
+                          {[0, 1, 2, 3, 4, 5].map(i => (
+                            <g key={i}>
+                              <line x1="40" y1={30 + i * 25} x2="350" y2={30 + i * 25} stroke="#e5e7eb" strokeWidth="0.5" />
+                              <text x="35" y={35 + i * 25} fontSize="9" fill="#6b7280" textAnchor="end">
+                                {i * 0.1}
+                              </text>
+                            </g>
+                          ))}
+                          {[0, 1, 2, 3, 4, 5, 6].map(i => (
+                            <g key={i}>
+                              <line x1={40 + i * 50} y1="30" x2={40 + i * 50} y2="155" stroke="#e5e7eb" strokeWidth="0.5" />
+                              <text x={40 + i * 50} y="170" fontSize="9" fill="#6b7280" textAnchor="middle">
+                                {50 + i * 50}μs
+                              </text>
+                            </g>
+                          ))}
+                          
+                          {/* Slippage curve (increasing with latency) */}
+                          <path
+                            d="M40,150 Q90,140 140,125 Q190,105 240,80 Q290,50 340,35"
+                            stroke="#ef4444"
+                            strokeWidth="3"
+                            fill="none"
+                          />
+                          
+                          {/* Data points */}
+                          {[
+                            {x: 40, y: 150, latency: 50, slippage: 0.02},
+                            {x: 90, y: 138, latency: 100, slippage: 0.05},
+                            {x: 140, y: 123, latency: 150, slippage: 0.12},
+                            {x: 190, y: 103, latency: 200, slippage: 0.18},
+                            {x: 240, y: 78, latency: 250, slippage: 0.28},
+                            {x: 290, y: 48, latency: 300, slippage: 0.42}
+                          ].map((point, i) => (
+                            <circle key={i} cx={point.x} cy={point.y} r="3" fill="#ef4444" stroke="white" strokeWidth="1"/>
+                          ))}
+                          
+                          {/* Labels */}
+                          <text x="40" y="20" fontSize="11" fill="#374151" fontWeight="bold">Slippage (bps)</text>
+                          <text x="200" y="185" fontSize="11" fill="#374151" fontWeight="bold">Latency (μs)</text>
+                        </svg>
                       </div>
                     </div>
                   </div>
