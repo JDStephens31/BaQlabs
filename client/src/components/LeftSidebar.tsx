@@ -1,8 +1,9 @@
 import { ChevronDown, ChevronRight, Database, Code, Brain, FlaskConical, FileText, Plus, List, Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import EventLogModal from "./EventLogModal";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 interface SidebarItem {
   id: string;
@@ -22,6 +23,8 @@ interface SidebarSection {
 export default function LeftSidebar() {
   const [eventLogOpen, setEventLogOpen] = useState(false);
   const [isStrategyRunning, setIsStrategyRunning] = useState(false);
+  const [backtestProgress, setBacktestProgress] = useState(0);
+  const [backtestStatus, setBacktestStatus] = useState<'idle' | 'running' | 'completed' | 'error'>('idle');
   interface EventLogEntry {
     id: string;
     timestamp: string;
@@ -49,6 +52,52 @@ export default function LeftSidebar() {
       details: "Connected to NQ 2025-08 dataset"
     }
   ]);
+
+  // WebSocket connection for real-time backtest execution
+  const { connectionStatus, sendMessage } = useWebSocket('', {
+    onMessage: (data) => {
+      switch (data.type) {
+        case 'backtestProgress':
+          setBacktestProgress(data.data.progress);
+          setBacktestStatus(data.data.status === 'completed' ? 'completed' : 'running');
+          addEventLogEntry("INFO", "Backtest", `Progress: ${data.data.progress}%`, 
+            `Current Price: $${data.data.currentPrice?.toFixed(2)} | Trades: ${data.data.tradesExecuted} | Capital: $${data.data.currentCapital}`);
+          
+          if (data.data.status === 'completed') {
+            setIsStrategyRunning(false);
+            addEventLogEntry("SUCCESS", "Backtest", "Backtest completed successfully", 
+              `Final results calculated and available in Results tab`);
+          }
+          break;
+          
+        case 'backtestCompleted':
+          setBacktestStatus('completed');
+          setIsStrategyRunning(false);
+          addEventLogEntry("SUCCESS", "Backtest", "Backtest execution finished", 
+            `Total Return: ${data.data.results?.totalReturn?.toFixed(2)}% | Trades: ${data.data.results?.totalTrades}`);
+          break;
+          
+        case 'backtestError':
+          setBacktestStatus('error');
+          setIsStrategyRunning(false);
+          addEventLogEntry("ERROR", "Backtest", "Backtest execution failed", data.data.message);
+          break;
+          
+        case 'marketData':
+          // Real-time market data updates during backtest
+          if (isStrategyRunning) {
+            addEventLogEntry("INFO", "Market", `Market update: ${data.data.side} ${data.data.size} @ $${data.data.price?.toFixed(2)}`);
+          }
+          break;
+      }
+    },
+    onConnect: () => {
+      addEventLogEntry("SUCCESS", "Connection", "WebSocket connected", "Real-time data connection established");
+    },
+    onDisconnect: () => {
+      addEventLogEntry("WARNING", "Connection", "WebSocket disconnected", "Attempting to reconnect...");
+    }
+  });
 
   const [sections, setSections] = useState<SidebarSection[]>([
     {
@@ -144,34 +193,41 @@ export default function LeftSidebar() {
   };
 
   const startStrategy = () => {
-    setIsStrategyRunning(true);
-    addEventLogEntry("INFO", "Strategy", "Starting strategy execution...");
+    // Get selected strategy and dataset
+    const selectedStrategy = sections.find(s => s.title === "Strategies")?.selectedItem;
+    const selectedDataset = sections.find(s => s.title === "Datasets")?.selectedItem;
     
-    // Simulate strategy execution with mock events
-    setTimeout(() => {
-      addEventLogEntry("SUCCESS", "Strategy", "Strategy started successfully", "Maker Queue Aware strategy is now running");
-    }, 500);
-
-    setTimeout(() => {
-      addEventLogEntry("INFO", "Trading", "First order placed", "BUY 100 NQ @ 4152.25 (queue position #3)");
-    }, 2000);
-
-    setTimeout(() => {
-      addEventLogEntry("SUCCESS", "Trading", "Order partially filled", "Filled 25/100 contracts at 4152.25");
-    }, 4000);
-
-    setTimeout(() => {
-      addEventLogEntry("INFO", "Analytics", "Performance update", "Current P&L: +$125.00 (0.05%)");
-    }, 6000);
+    if (!selectedStrategy || !selectedDataset) {
+      addEventLogEntry("ERROR", "Strategy", "Cannot start backtest", "Please select both a strategy and dataset");
+      return;
+    }
+    
+    setIsStrategyRunning(true);
+    setBacktestProgress(0);
+    setBacktestStatus('running');
+    
+    addEventLogEntry("INFO", "Strategy", "Starting backtest execution...", 
+      `Strategy: ${selectedStrategy} | Dataset: ${selectedDataset} | NQ Starting Price: $23713`);
+    
+    // Send backtest start command via WebSocket
+    sendMessage({
+      type: 'startBacktest',
+      data: {
+        strategyId: selectedStrategy,
+        datasetId: selectedDataset
+      }
+    });
   };
 
   const stopStrategy = () => {
     setIsStrategyRunning(false);
-    addEventLogEntry("WARNING", "Strategy", "Stopping strategy execution...");
+    setBacktestStatus('idle');
+    addEventLogEntry("WARNING", "Strategy", "Stopping backtest execution...");
     
-    setTimeout(() => {
-      addEventLogEntry("INFO", "Strategy", "Strategy stopped", "All positions closed, final P&L: +$312.50");
-    }, 1000);
+    // Send stop command via WebSocket
+    sendMessage({
+      type: 'stopBacktest'
+    });
   };
 
   return (
@@ -248,11 +304,17 @@ export default function LeftSidebar() {
           {/* Strategy Controls */}
           <div className="mt-4 p-3 border-t border-border">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium">Strategy Control</span>
+              <span className="text-sm font-medium">Backtest Control</span>
               {isStrategyRunning && (
                 <div className="flex items-center space-x-1">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-green-600">Running</span>
+                  <span className="text-xs text-green-600">Running {backtestProgress}%</span>
+                </div>
+              )}
+              {connectionStatus === 'Disconnected' && (
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <span className="text-xs text-red-600">Offline</span>
                 </div>
               )}
             </div>
@@ -261,10 +323,10 @@ export default function LeftSidebar() {
                 size="sm"
                 className="w-full"
                 onClick={startStrategy}
-                disabled={isStrategyRunning}
+                disabled={isStrategyRunning || connectionStatus !== 'Connected'}
               >
                 <Play className="w-4 h-4 mr-1" />
-                Start Strategy
+                Run Backtest
               </Button>
               <Button
                 size="sm"
@@ -274,7 +336,7 @@ export default function LeftSidebar() {
                 disabled={!isStrategyRunning}
               >
                 <Square className="w-4 h-4 mr-1" />
-                Stop Strategy
+                Stop Backtest
               </Button>
               <Button
                 size="sm"

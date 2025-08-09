@@ -69,7 +69,8 @@ function onMarketData(book, trades) {
         stopLoss: 6,
         useMBO: true,
         useLatency: true,
-        latencyProfile: { distribution: "Gaussian", mean: 10, stdDev: 3 }
+        latencyProfile: { distribution: "Gaussian", mean: 10, stdDev: 3 },
+        positionLimits: { maxLong: 10, maxShort: 10 }
       },
       createdAt: new Date(),
       updatedAt: new Date(),
