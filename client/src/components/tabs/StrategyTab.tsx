@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import StrategySelector from "@/components/StrategySelector";
 
 export default function StrategyTab() {
   const sampleStrategy = `// Strategy: Maker Queue Aware
@@ -37,9 +38,12 @@ function calculateImbalance(book) {
 }`;
 
   return (
-    <div className="flex flex-1">
-      {/* Code Editor */}
-      <div className="flex-1 bg-card border-r border-border">
+    <div className="flex flex-1 flex-col">
+      <StrategySelector />
+      
+      <div className="flex flex-1">
+        {/* Code Editor */}
+        <div className="flex-1 bg-card border-r border-border">
         <div className="p-3 border-b border-border bg-muted flex justify-between items-center">
           <h4 className="font-semibold">Strategy Code</h4>
           <div className="space-x-2">
@@ -141,6 +145,7 @@ function calculateImbalance(book) {
           </div>
           </div>
         </ScrollArea>
+        </div>
       </div>
     </div>
   );

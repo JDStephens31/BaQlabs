@@ -1,7 +1,24 @@
+import { useState, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function RightInspector() {
+  const [selectedStrategy, setSelectedStrategy] = useState("Maker Queue Aware");
+  const [selectedDataset, setSelectedDataset] = useState("NQ 2025-08 (5 days)");
+
+  useEffect(() => {
+    const handleItemSelected = (event: any) => {
+      const { section, item } = event.detail;
+      if (section === 'strategies') {
+        setSelectedStrategy(item.name);
+      } else if (section === 'datasets') {
+        setSelectedDataset(item.name);
+      }
+    };
+
+    window.addEventListener('itemSelected', handleItemSelected);
+    return () => window.removeEventListener('itemSelected', handleItemSelected);
+  }, []);
   return (
     <div className="w-80 bg-card border-l border-border">
       <div className="p-3 border-b border-border">
@@ -15,8 +32,12 @@ export default function RightInspector() {
             <h4 className="font-medium text-sm mb-3">Current Context</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Project:</span>
-                <span className="font-mono">BACKTESTING</span>
+                <span className="text-muted-foreground">Strategy:</span>
+                <span className="font-mono text-xs">{selectedStrategy}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Dataset:</span>
+                <span className="font-mono text-xs">{selectedDataset}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Status:</span>

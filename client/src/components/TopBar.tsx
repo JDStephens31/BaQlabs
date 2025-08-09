@@ -1,14 +1,34 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Square, RotateCcw, Settings } from "lucide-react";
 
 export default function TopBar() {
+  const [currentStrategy, setCurrentStrategy] = useState("Maker Queue Aware");
+  const [currentDataset, setCurrentDataset] = useState("NQ 2025-08 (5 days)");
+
+  useEffect(() => {
+    const handleItemSelected = (event: any) => {
+      const { section, item } = event.detail;
+      if (section === 'strategies') {
+        setCurrentStrategy(item.name);
+      } else if (section === 'datasets') {
+        setCurrentDataset(item.name);
+      }
+    };
+
+    window.addEventListener('itemSelected', handleItemSelected);
+    return () => window.removeEventListener('itemSelected', handleItemSelected);
+  }, []);
   return (
     <div className="h-14 bg-card border-b border-border flex items-center justify-between px-4">
       {/* Left: Logo/Title */}
       <div className="flex items-center space-x-4">
         <h1 className="text-lg font-extrabold bg-[#00c3ff00] text-[#bd1c00]">Qbacktest</h1>
         <div className="text-sm text-muted-foreground">
-          Strategy: Momentum Scalper v1.2
+          Strategy: {currentStrategy}
+        </div>
+        <div className="text-sm text-muted-foreground">
+          Dataset: {currentDataset}
         </div>
       </div>
       {/* Center: Backtest Controls */}
