@@ -1,33 +1,36 @@
-import CodeEditor from "../CodeEditor";
+import CodeEditor from "@/components/CodeEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function StrategyTab() {
-  const sampleStrategy = `// Sample Trading Strategy
-function initialize() {
-  // Called once at strategy start
-  console.log("Strategy initialized");
-}
+  const sampleStrategy = `// Strategy: Maker Queue Aware
+// Author: Trading Team
+// Last Modified: 2025-01-15 14:25 PST
 
-function onMarketData(event) {
-  // Called for each market data event
-  const { price, size, side } = event;
+function onMarketData(book, trades) {
+  const imbalance = calculateImbalance(book);
+  const churnRising = isChurnRising(trades);
   
-  if (side === 'BID' && price > getLastPrice() * 1.001) {
-    // Buy signal detected
-    placeOrder('BUY', size, price);
+  if (imbalance > 0.6 && churnRising) {
+    joinBid(book.bestBid, 1);
+  } else if (imbalance < -0.6 && churnRising) {
+    joinAsk(book.bestAsk, 1);
   }
   
-  if (side === 'ASK' && price < getLastPrice() * 0.999) {
-    // Sell signal detected  
-    placeOrder('SELL', size, price);
+  // Risk management
+  if (getPosition() > maxPosition) {
+    reducePosition();
   }
 }
 
-function onTrade(trade) {
-  // Called when our order gets filled
-  console.log(\`Trade executed: \${trade.side} \${trade.size}@\${trade.price}\`);
+function calculateImbalance(book) {
+  const bidSize = book.bids.reduce((sum, level) => sum + 
+    level.size, 0);
+  const askSize = book.asks.reduce((sum, level) => sum + 
+    level.size, 0);
+  
+  return (bidSize - askSize) / (bidSize + askSize);
 }`;
 
   return (
@@ -59,7 +62,7 @@ function onTrade(trade) {
             <div className="space-y-3">
               <div>
                 <Label className="text-sm">Strategy Name</Label>
-                <Input defaultValue="Momentum Scalper v1.2" className="mt-1" />
+                <Input defaultValue="Maker Queue Aware" className="mt-1" />
               </div>
               <div>
                 <Label className="text-sm">Author</Label>

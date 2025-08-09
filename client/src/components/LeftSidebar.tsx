@@ -1,112 +1,86 @@
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChevronDown, ChevronRight, Database, Code, Brain, FlaskConical, FileText } from "lucide-react";
 import { useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-interface TreeSection {
-  id: string;
+interface SidebarSection {
   title: string;
+  icon: React.ReactNode;
+  items: string[];
   expanded: boolean;
-  items: { id: string; name: string; active?: boolean }[];
 }
 
 export default function LeftSidebar() {
-  const [sections, setSections] = useState<TreeSection[]>([
+  const [sections, setSections] = useState<SidebarSection[]>([
     {
-      id: "datasets",
       title: "Datasets",
-      expanded: true,
-      items: [
-        { id: "nq-2025-08", name: "NQ 2025-08 (5 days)", active: true },
-        { id: "es-2025-07", name: "ES 2025-07 (10 days)" },
-        { id: "rty-2025-06", name: "RTY 2025-06 (3 days)" },
-      ],
+      icon: <Database className="w-4 h-4" />,
+      items: ["NQ 2025-08 (5 days)", "ES 2025-07 (10 days)", "RTY 2025-06 (3 days)"],
+      expanded: true
     },
     {
-      id: "strategies",
-      title: "Strategies",
-      expanded: true,
-      items: [
-        { id: "maker-queue", name: "Maker Queue Aware", active: true },
-        { id: "mean-reversion", name: "Mean Reversion v3" },
-        { id: "momentum", name: "Momentum Breakout" },
-      ],
+      title: "Strategies", 
+      icon: <Code className="w-4 h-4" />,
+      items: ["Maker Queue Aware", "Mean Reversion v3", "Momentum Breakout"],
+      expanded: true
     },
     {
-      id: "models",
       title: "Models",
-      expanded: true,
-      items: [
-        { id: "xgboost", name: "XGBoost Classifier", active: true },
-        { id: "lstm", name: "LSTM Predictor" },
-      ],
+      icon: <Brain className="w-4 h-4" />,
+      items: ["XGBoost Classifier", "LSTM Predictor"],
+      expanded: true
     },
     {
-      id: "experiments",
       title: "Experiments",
-      expanded: true,
-      items: [
-        { id: "run-1", name: "Run_2025_01_15_14:23", active: true },
-        { id: "run-2", name: "Run_2025_01_15_09:45" },
-      ],
+      icon: <FlaskConical className="w-4 h-4" />,
+      items: ["Run_2025_01_15_14:23", "Run_2025_01_15_09:45"],
+      expanded: true
     },
     {
-      id: "reports",
       title: "Reports",
-      expanded: false,
-      items: [
-        { id: "performance", name: "Performance Summary" },
-        { id: "risk", name: "Risk Attribution" },
-      ],
-    },
+      icon: <FileText className="w-4 h-4" />,
+      items: ["Performance Summary", "Risk Attribution"],
+      expanded: false
+    }
   ]);
 
-  const toggleSection = (sectionId: string) => {
-    setSections(prev => prev.map(section => 
-      section.id === sectionId 
-        ? { ...section, expanded: !section.expanded }
-        : section
+  const toggleSection = (index: number) => {
+    setSections(prev => prev.map((section, i) => 
+      i === index ? { ...section, expanded: !section.expanded } : section
     ));
   };
 
   return (
-    <div className="w-64 bg-card border-r border-border flex flex-col">
+    <div className="w-64 bg-card border-r border-border">
       <div className="p-3 border-b border-border">
-        <h3 className="font-semibold text-foreground">Navigator</h3>
+        <h3 className="font-semibold text-sm">Navigator</h3>
       </div>
       
-      <ScrollArea className="flex-1">
+      <ScrollArea className="h-full">
         <div className="p-2">
-          {sections.map((section) => (
-            <div key={section.id} className="mb-4">
-              <Button
-                variant="ghost"
-                className="w-full justify-start p-0 h-auto font-medium text-foreground hover:bg-accent"
-                onClick={() => toggleSection(section.id)}
+          {sections.map((section, index) => (
+            <div key={section.title} className="mb-1">
+              <button
+                onClick={() => toggleSection(index)}
+                className="w-full flex items-center space-x-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-sm"
               >
-                <div className="flex items-center">
-                  {section.expanded ? (
-                    <ChevronDown className="h-4 w-4 mr-1" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4 mr-1" />
-                  )}
-                  {section.title}
-                </div>
-              </Button>
+                {section.expanded ? (
+                  <ChevronDown className="w-3 h-3" />
+                ) : (
+                  <ChevronRight className="w-3 h-3" />
+                )}
+                {section.icon}
+                <span className="font-medium">{section.title}</span>
+              </button>
               
               {section.expanded && (
-                <div className="ml-4 mt-2 space-y-1">
-                  {section.items.map((item) => (
-                    <div
-                      key={item.id}
-                      className={`py-1 px-2 rounded cursor-pointer text-sm transition-colors ${
-                        item.active
-                          ? "bg-accent text-accent-foreground font-medium"
-                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                      }`}
+                <div className="ml-6 mt-1 space-y-1">
+                  {section.items.map((item, itemIndex) => (
+                    <button
+                      key={itemIndex}
+                      className="w-full text-left p-1 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-sm"
                     >
-                      {item.name}
-                    </div>
+                      {item}
+                    </button>
                   ))}
                 </div>
               )}

@@ -20,7 +20,9 @@ export default function BacktestingEngine() {
         <RightInspector />
       </div>
       
-      <ConsoleLog />
+      <div className="h-32 border-t border-border">
+        <ConsoleLog />
+      </div>
     </div>
   );
 }

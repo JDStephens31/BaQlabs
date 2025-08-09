@@ -1,29 +1,26 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 export default function RightInspector() {
   return (
-    <div className="w-72 bg-card border-l border-border flex flex-col">
-      <div className="p-3 border-b border-border bg-muted">
-        <h4 className="font-semibold">Inspector</h4>
+    <div className="w-80 bg-card border-l border-border">
+      <div className="p-3 border-b border-border">
+        <h3 className="font-semibold text-sm">Inspector</h3>
       </div>
       
-      <ScrollArea className="flex-1">
+      <ScrollArea className="h-full">
         <div className="p-4 space-y-6">
           {/* Current Context */}
           <div>
-            <h5 className="font-medium mb-3">Current Context</h5>
+            <h4 className="font-medium text-sm mb-3">Current Context</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Mode:</span>
+                <span className="text-muted-foreground">Project:</span>
                 <span className="font-mono">BACKTESTING</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Status:</span>
-                <span className="font-mono text-green-600">READY</span>
+                <span className="text-green-600 font-mono">READY</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Data Quality:</span>
@@ -31,18 +28,18 @@ export default function RightInspector() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Compile Status:</span>
-                <span className="font-mono text-green-600">✓ VALID</span>
+                <span className="text-green-600 font-mono">✓ VALID</span>
               </div>
             </div>
           </div>
 
           {/* Last Trade Details */}
           <div>
-            <h5 className="font-medium mb-3">Last Trade Details</h5>
+            <h4 className="font-medium text-sm mb-3">Last Trade Details</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Side:</span>
-                <span className="font-mono">BUY</span>
+                <span className="text-blue-600 font-mono">BUY</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Price:</span>
@@ -69,15 +66,15 @@ export default function RightInspector() {
 
           {/* Risk Metrics */}
           <div>
-            <h5 className="font-medium mb-3">Risk Metrics</h5>
+            <h4 className="font-medium text-sm mb-3">Risk Metrics</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Current PnL:</span>
-                <span className="font-mono text-green-600">+$2,847</span>
+                <span className="text-green-600 font-mono">+$2,847</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Max Drawdown:</span>
-                <span className="font-mono">-$1,240</span>
+                <span className="text-red-600 font-mono">-$1,240</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Position:</span>
@@ -100,12 +97,12 @@ export default function RightInspector() {
 
           {/* Order Parameters */}
           <div>
-            <h5 className="font-medium mb-3">Order Parameters</h5>
+            <h4 className="font-medium text-sm mb-3">Order Parameters</h4>
             <div className="space-y-3">
               <div>
-                <Label className="text-xs font-medium text-muted-foreground">Order Type</Label>
+                <label className="text-xs text-muted-foreground">Order Type</label>
                 <Select defaultValue="limit">
-                  <SelectTrigger className="w-full mt-1">
+                  <SelectTrigger className="h-8 text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -116,43 +113,43 @@ export default function RightInspector() {
                 </Select>
               </div>
               
-              <div>
-                <Label className="text-xs font-medium text-muted-foreground">Time in Force</Label>
-                <Select defaultValue="ioc">
-                  <SelectTrigger className="w-full mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ioc">IOC</SelectItem>
-                    <SelectItem value="fok">FOK</SelectItem>
-                    <SelectItem value="day">DAY</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <Label className="text-xs font-medium text-muted-foreground">Min Fill Size</Label>
-                <Input type="number" defaultValue="1" className="mt-1" />
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Max Position:</span>
+                  <span className="font-mono">±10</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Risk Limit:</span>
+                  <span className="font-mono">$5,000</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Commission:</span>
+                  <span className="font-mono">$0.25/side</span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Quick Actions */}
+          {/* Session Info */}
           <div>
-            <h5 className="font-medium mb-3">Quick Actions</h5>
-            <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start">
-                Export Results
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                Save Strategy
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                Clone Experiment
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                View Full Report
-              </Button>
+            <h4 className="font-medium text-sm mb-3">Session Info</h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Start Time:</span>
+                <span className="font-mono">06:00 AM PST</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">End Time:</span>
+                <span className="font-mono">03:30 PM PST</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Timezone:</span>
+                <span className="font-mono">PST</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Total Events:</span>
+                <span className="font-mono">2.4M</span>
+              </div>
             </div>
           </div>
         </div>
