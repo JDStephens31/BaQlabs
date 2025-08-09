@@ -1,60 +1,45 @@
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Play, Pause, Square } from "lucide-react";
+import { Play, Square, RotateCcw, Settings } from "lucide-react";
 
 export default function TopBar() {
   return (
-    <div className="bg-card border-b border-border px-4 py-2 flex items-center justify-between">
-      <div className="flex items-center space-x-6">
-        <div className="flex items-center space-x-2">
-          <span className="font-semibold">Project:</span>
-          <Select defaultValue="momentum-v2">
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="momentum-v2">Momentum Strategy v2.1</SelectItem>
-              <SelectItem value="mean-reversion">Mean Reversion v3</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <span className="font-medium">Dataset:</span>
-          <Select defaultValue="nq-2025-08">
-            <SelectTrigger className="w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="nq-2025-08">NQ 2025-08 (5 days)</SelectItem>
-              <SelectItem value="es-2025-07">ES 2025-07 (10 days)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <span className="font-medium">Symbol:</span>
-          <span className="font-mono font-semibold">NQH25</span>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <span className="font-medium">Session:</span>
-          <span className="font-mono">06:00-15:30 PST</span>
+    <div className="h-14 bg-card border-b border-border flex items-center justify-between px-4">
+      {/* Left: Logo/Title */}
+      <div className="flex items-center space-x-4">
+        <h1 className="font-bold text-lg">AlgoBacktest Pro</h1>
+        <div className="text-sm text-muted-foreground">
+          Strategy: Momentum Scalper v1.2
         </div>
       </div>
-      
+
+      {/* Center: Backtest Controls */}
       <div className="flex items-center space-x-2">
-        <Button variant="outline" size="sm">
-          1-Day Smoke Test
+        <Button size="sm" className="bg-green-600 hover:bg-green-700">
+          <Play className="w-4 h-4 mr-1" />
+          Start
         </Button>
-        <Button size="sm" className="bg-primary text-primary-foreground">
-          Run Full Backtest
+        <Button size="sm" variant="outline">
+          <Square className="w-4 h-4 mr-1" />
+          Stop
         </Button>
-        <Button variant="outline" size="sm">
-          <Pause className="h-4 w-4" />
+        <Button size="sm" variant="outline">
+          <RotateCcw className="w-4 h-4 mr-1" />
+          Reset
         </Button>
-        <Button variant="outline" size="sm">
-          <Square className="h-4 w-4" />
+      </div>
+
+      {/* Right: Status & Settings */}
+      <div className="flex items-center space-x-4">
+        <div className="text-sm">
+          <span className="text-muted-foreground">Status:</span>
+          <span className="ml-1 text-green-600 font-medium">Ready</span>
+        </div>
+        <div className="text-sm">
+          <span className="text-muted-foreground">WS:</span>
+          <span className="ml-1 text-green-600 font-medium">Connected</span>
+        </div>
+        <Button size="sm" variant="ghost">
+          <Settings className="w-4 h-4" />
         </Button>
       </div>
     </div>
