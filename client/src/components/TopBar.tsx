@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Square, RotateCcw, Settings } from "lucide-react";
+import SettingsModal from "@/components/SettingsModal";
 
 export default function TopBar() {
   const [currentStrategy, setCurrentStrategy] = useState("Maker Queue Aware");
@@ -56,9 +57,11 @@ export default function TopBar() {
           <span className="text-muted-foreground">WS:</span>
           <span className="ml-1 text-green-600 font-medium">Connected</span>
         </div>
-        <Button size="sm" variant="ghost">
-          <Settings className="w-4 h-4" />
-        </Button>
+        <SettingsModal>
+          <Button size="sm" variant="ghost">
+            <Settings className="w-4 h-4" />
+          </Button>
+        </SettingsModal>
       </div>
     </div>
   );
