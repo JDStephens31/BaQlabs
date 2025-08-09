@@ -3,7 +3,6 @@ import TopBar from "./TopBar";
 import LeftSidebar from "./LeftSidebar";
 import MainContent from "./MainContent";
 import RightInspector from "./RightInspector";
-import ConsoleLog from "./ConsoleLog";
 import DatasetUploadModal from "./DatasetUploadModal";
 
 export type TabType = "STRATEGY" | "MBO_REPLAY" | "RESULTS" | "QUEUE" | "LATENCY_LAB" | "MODEL_LAB";
@@ -29,10 +28,6 @@ export default function BacktestingEngine() {
         <LeftSidebar />
         <MainContent activeTab={activeTab} onTabChange={setActiveTab} />
         <RightInspector />
-      </div>
-      
-      <div className="h-32 border-t border-border">
-        <ConsoleLog />
       </div>
       
       <DatasetUploadModal 

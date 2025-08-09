@@ -1,7 +1,8 @@
-import { ChevronDown, ChevronRight, Database, Code, Brain, FlaskConical, FileText, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, Database, Code, Brain, FlaskConical, FileText, Plus, List, Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import EventLogModal from "./EventLogModal";
 
 interface SidebarItem {
   id: string;
@@ -19,6 +20,36 @@ interface SidebarSection {
 }
 
 export default function LeftSidebar() {
+  const [eventLogOpen, setEventLogOpen] = useState(false);
+  const [isStrategyRunning, setIsStrategyRunning] = useState(false);
+  interface EventLogEntry {
+    id: string;
+    timestamp: string;
+    level: "INFO" | "WARNING" | "ERROR" | "SUCCESS";
+    category: string;
+    message: string;
+    details?: string;
+  }
+
+  const [eventLog, setEventLog] = useState<EventLogEntry[]>([
+    {
+      id: "1",
+      timestamp: "14:23:45.123",
+      level: "INFO" as const,
+      category: "Strategy",
+      message: "Strategy initialized successfully",
+      details: "Maker Queue Aware strategy loaded with parameters"
+    },
+    {
+      id: "2", 
+      timestamp: "14:23:46.234",
+      level: "SUCCESS" as const,
+      category: "Data",
+      message: "Market data connection established",
+      details: "Connected to NQ 2025-08 dataset"
+    }
+  ]);
+
   const [sections, setSections] = useState<SidebarSection[]>([
     {
       title: "Datasets",
@@ -100,6 +131,49 @@ export default function LeftSidebar() {
     window.dispatchEvent(event);
   };
 
+  const addEventLogEntry = (level: "INFO" | "SUCCESS" | "WARNING" | "ERROR", category: string, message: string, details?: string) => {
+    const newEntry: EventLogEntry = {
+      id: Date.now().toString(),
+      timestamp: new Date().toLocaleTimeString('en-US', { hour12: false, fractionalSecondDigits: 3 }),
+      level,
+      category,
+      message,
+      details
+    };
+    setEventLog(prev => [newEntry, ...prev]);
+  };
+
+  const startStrategy = () => {
+    setIsStrategyRunning(true);
+    addEventLogEntry("INFO", "Strategy", "Starting strategy execution...");
+    
+    // Simulate strategy execution with mock events
+    setTimeout(() => {
+      addEventLogEntry("SUCCESS", "Strategy", "Strategy started successfully", "Maker Queue Aware strategy is now running");
+    }, 500);
+
+    setTimeout(() => {
+      addEventLogEntry("INFO", "Trading", "First order placed", "BUY 100 NQ @ 4152.25 (queue position #3)");
+    }, 2000);
+
+    setTimeout(() => {
+      addEventLogEntry("SUCCESS", "Trading", "Order partially filled", "Filled 25/100 contracts at 4152.25");
+    }, 4000);
+
+    setTimeout(() => {
+      addEventLogEntry("INFO", "Analytics", "Performance update", "Current P&L: +$125.00 (0.05%)");
+    }, 6000);
+  };
+
+  const stopStrategy = () => {
+    setIsStrategyRunning(false);
+    addEventLogEntry("WARNING", "Strategy", "Stopping strategy execution...");
+    
+    setTimeout(() => {
+      addEventLogEntry("INFO", "Strategy", "Strategy stopped", "All positions closed, final P&L: +$312.50");
+    }, 1000);
+  };
+
   return (
     <div className="w-64 bg-card border-r border-border">
       <div className="p-3 border-b border-border flex items-center justify-between">
@@ -170,8 +244,59 @@ export default function LeftSidebar() {
               )}
             </div>
           ))}
+
+          {/* Strategy Controls */}
+          <div className="mt-4 p-3 border-t border-border">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium">Strategy Control</span>
+              {isStrategyRunning && (
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs text-green-600">Running</span>
+                </div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Button
+                size="sm"
+                className="w-full"
+                onClick={startStrategy}
+                disabled={isStrategyRunning}
+              >
+                <Play className="w-4 h-4 mr-1" />
+                Start Strategy
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full"
+                onClick={stopStrategy}
+                disabled={!isStrategyRunning}
+              >
+                <Square className="w-4 h-4 mr-1" />
+                Stop Strategy
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="w-full"
+                onClick={() => setEventLogOpen(true)}
+              >
+                <List className="w-4 h-4 mr-1" />
+                Event Log ({eventLog.length})
+              </Button>
+            </div>
+          </div>
         </div>
       </ScrollArea>
+
+      {/* Event Log Modal */}
+      <EventLogModal
+        open={eventLogOpen}
+        onOpenChange={setEventLogOpen}
+        events={eventLog}
+        isStrategyRunning={isStrategyRunning}
+      />
     </div>
   );
 }
