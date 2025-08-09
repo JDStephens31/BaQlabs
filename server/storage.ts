@@ -42,7 +42,7 @@ export class MemStorage implements IStorage {
   private seedData() {
     // Seed with sample strategies
     const strategy1: Strategy = {
-      id: "strategy-1",
+      id: "maker-queue-aware",
       name: "Maker Queue Aware",
       code: `// Strategy: Maker Queue Aware
 function onMarketData(book, trades) {
@@ -77,7 +77,7 @@ function onMarketData(book, trades) {
     };
 
     const dataset1: Dataset = {
-      id: "dataset-1",
+      id: "nq-2025-08",
       name: "NQ 2025-08 (5 days)",
       symbol: "NQH25",
       startDate: new Date("2025-08-01"),
@@ -86,8 +86,31 @@ function onMarketData(book, trades) {
       eventCount: 2300000,
     };
 
+    // Add more sample datasets to match the frontend
+    const dataset2: Dataset = {
+      id: "es-2025-07",
+      name: "ES 2025-07 (10 days)",
+      symbol: "ESN25",
+      startDate: new Date("2025-07-01"),
+      endDate: new Date("2025-07-10"),
+      dataQuality: 99.2,
+      eventCount: 4500000,
+    };
+
+    const dataset3: Dataset = {
+      id: "rty-2025-06",
+      name: "RTY 2025-06 (3 days)",
+      symbol: "RTYM25",
+      startDate: new Date("2025-06-01"),
+      endDate: new Date("2025-06-03"),
+      dataQuality: 97.8,
+      eventCount: 1200000,
+    };
+
     this.strategies.set(strategy1.id, strategy1);
     this.datasets.set(dataset1.id, dataset1);
+    this.datasets.set(dataset2.id, dataset2);
+    this.datasets.set(dataset3.id, dataset3);
   }
 
   // Strategy methods

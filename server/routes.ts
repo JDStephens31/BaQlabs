@@ -7,14 +7,21 @@ import { insertStrategySchema, insertBacktestRunSchema } from "@shared/schema";
 // Simulated backtest execution with NQ futures data
 async function runBacktestWithProgress(strategyId: string, datasetId: string, ws: WebSocket) {
   try {
+    console.log(`Looking for strategy: ${strategyId}, dataset: ${datasetId}`);
+    
     // Get strategy and dataset
     const strategy = await storage.getStrategy(strategyId);
     const dataset = await storage.getDataset(datasetId);
     
+    console.log(`Found strategy:`, strategy ? 'YES' : 'NO');
+    console.log(`Found dataset:`, dataset ? 'YES' : 'NO');
+    
     if (!strategy || !dataset) {
+      const errorMsg = `Strategy or dataset not found - Strategy: ${strategy ? 'found' : 'missing'}, Dataset: ${dataset ? 'found' : 'missing'}`;
+      console.error(errorMsg);
       ws.send(JSON.stringify({
         type: 'backtestError',
-        data: { message: 'Strategy or dataset not found' }
+        data: { message: errorMsg }
       }));
       return;
     }
@@ -131,9 +138,10 @@ async function runBacktestWithProgress(strategyId: string, datasetId: string, ws
     
   } catch (error) {
     console.error('Backtest execution error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     ws.send(JSON.stringify({
       type: 'backtestError',
-      data: { message: 'Backtest execution failed' }
+      data: { message: `Backtest execution failed: ${errorMessage}` }
     }));
   }
 }
