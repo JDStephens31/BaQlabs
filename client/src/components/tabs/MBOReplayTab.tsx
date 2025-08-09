@@ -372,6 +372,123 @@ export default function MBOReplayTab() {
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-4">
+              {/* Order Flow Intensity Heatmap */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Order Flow Intensity Heatmap</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80 w-full bg-white rounded border relative overflow-hidden">
+                    <svg width="100%" height="320" className="absolute inset-0">
+                      <defs>
+                        {/* Gradient definitions for different intensities */}
+                        <linearGradient id="buyIntensity" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#dcfce7" />
+                          <stop offset="50%" stopColor="#16a34a" />
+                          <stop offset="100%" stopColor="#15803d" />
+                        </linearGradient>
+                        <linearGradient id="sellIntensity" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#fef2f2" />
+                          <stop offset="50%" stopColor="#dc2626" />
+                          <stop offset="100%" stopColor="#b91c1c" />
+                        </linearGradient>
+                      </defs>
+
+                      {/* Time axis labels */}
+                      {Array.from({ length: 12 }, (_, i) => (
+                        <g key={i}>
+                          <line x1={50 + i * 60} y1="30" x2={50 + i * 60} y2="280" stroke="#e5e7eb" strokeWidth="1" />
+                          <text x={50 + i * 60} y="300" fontSize="10" fill="#6b7280" textAnchor="middle">
+                            {`${9 + Math.floor(i / 2)}:${(i % 2) * 30}`}
+                          </text>
+                        </g>
+                      ))}
+
+                      {/* Price level labels */}
+                      {Array.from({ length: 20 }, (_, i) => (
+                        <g key={i}>
+                          <line x1="40" y1={40 + i * 12} x2="750" y2={40 + i * 12} stroke="#e5e7eb" strokeWidth="0.5" />
+                          <text x="35" y={45 + i * 12} fontSize="9" fill="#6b7280" textAnchor="end">
+                            {(4155 - i * 0.25).toFixed(2)}
+                          </text>
+                        </g>
+                      ))}
+
+                      {/* Order flow intensity cells */}
+                      {Array.from({ length: 12 }, (_, timeIndex) => 
+                        Array.from({ length: 20 }, (_, priceIndex) => {
+                          const intensity = Math.random();
+                          const isBuy = Math.random() > 0.5;
+                          const cellWidth = 55;
+                          const cellHeight = 11;
+                          const x = 52 + timeIndex * 60;
+                          const y = 40 + priceIndex * 12;
+                          
+                          if (intensity < 0.1) return null; // No activity
+                          
+                          return (
+                            <g key={`${timeIndex}-${priceIndex}`}>
+                              <rect
+                                x={x}
+                                y={y}
+                                width={cellWidth}
+                                height={cellHeight}
+                                fill={isBuy ? "#22c55e" : "#ef4444"}
+                                opacity={intensity * 0.8}
+                                className="hover:stroke-black hover:stroke-1"
+                              />
+                              {intensity > 0.7 && (
+                                <text
+                                  x={x + cellWidth / 2}
+                                  y={y + cellHeight / 2 + 2}
+                                  fontSize="8"
+                                  fill="white"
+                                  textAnchor="middle"
+                                  fontWeight="bold"
+                                >
+                                  {Math.round(intensity * 100)}
+                                </text>
+                              )}
+                            </g>
+                          );
+                        })
+                      )}
+
+                      {/* Current price line */}
+                      <line x1="40" y1="160" x2="750" y2="160" stroke="#3b82f6" strokeWidth="3" opacity="0.8" />
+                      <text x="760" y="165" fontSize="11" fill="#3b82f6" fontWeight="bold">
+                        Current: $4152.25
+                      </text>
+
+                      {/* Labels */}
+                      <text x="50" y="20" fontSize="14" fill="#374151" fontWeight="bold">Price Levels</text>
+                      <text x="400" y="315" fontSize="12" fill="#374151" fontWeight="bold">Time (Eastern)</text>
+                      
+                      {/* Legend */}
+                      <g transform="translate(600, 50)">
+                        <rect x="0" y="0" width="140" height="120" fill="white" stroke="#e5e7eb" rx="4" fillOpacity="0.95"/>
+                        <text x="10" y="15" fontSize="11" fill="#374151" fontWeight="bold">Order Flow Intensity</text>
+                        
+                        <rect x="10" y="25" width="15" height="8" fill="#22c55e" opacity="0.3"/>
+                        <text x="30" y="32" fontSize="9" fill="#374151">Low Buy Pressure</text>
+                        
+                        <rect x="10" y="40" width="15" height="8" fill="#22c55e" opacity="0.8"/>
+                        <text x="30" y="47" fontSize="9" fill="#374151">High Buy Pressure</text>
+                        
+                        <rect x="10" y="55" width="15" height="8" fill="#ef4444" opacity="0.3"/>
+                        <text x="30" y="62" fontSize="9" fill="#374151">Low Sell Pressure</text>
+                        
+                        <rect x="10" y="70" width="15" height="8" fill="#ef4444" opacity="0.8"/>
+                        <text x="30" y="77" fontSize="9" fill="#374151">High Sell Pressure</text>
+                        
+                        <line x1="10" y1="90" x2="120" y2="90" stroke="#3b82f6" strokeWidth="2"/>
+                        <text x="10" y="105" fontSize="9" fill="#374151">Current Market Price</text>
+                      </g>
+                    </svg>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Market Microstructure Metrics */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Card>

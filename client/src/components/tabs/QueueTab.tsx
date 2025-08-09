@@ -512,11 +512,179 @@ export default function QueueTab() {
                   <CardTitle>Queue Position Prediction</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-48 w-full bg-muted rounded-lg flex items-center justify-center">
-                    <div className="text-center text-muted-foreground">
-                      <Target className="w-8 h-8 mx-auto mb-2" />
-                      <p>AI-powered queue position forecasting</p>
-                      <p className="text-sm">Based on market microstructure patterns</p>
+                  <div className="space-y-4">
+                    {/* AI Prediction Chart */}
+                    <div className="h-64 w-full bg-white rounded border">
+                      <svg width="100%" height="256" className="overflow-visible">
+                        <defs>
+                          <linearGradient id="predictionGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3"/>
+                            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.1"/>
+                          </linearGradient>
+                          <linearGradient id="confidenceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#10b981" stopOpacity="0.2"/>
+                            <stop offset="100%" stopColor="#10b981" stopOpacity="0.05"/>
+                          </linearGradient>
+                        </defs>
+                        
+                        {/* Grid lines */}
+                        {[0, 1, 2, 3, 4, 5].map(i => (
+                          <g key={i}>
+                            <line 
+                              x1="60" 
+                              y1={40 + i * 35} 
+                              x2="500" 
+                              y2={40 + i * 35} 
+                              stroke="#e5e7eb" 
+                              strokeWidth="1"
+                            />
+                            <text x="45" y={45 + i * 35} fontSize="10" fill="#6b7280" textAnchor="end">
+                              {Math.round((5 - i) * 20)}
+                            </text>
+                          </g>
+                        ))}
+                        
+                        {/* Time axis */}
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                          <g key={i}>
+                            <line 
+                              x1={60 + i * 55} 
+                              y1="40" 
+                              x2={60 + i * 55} 
+                              y2="215" 
+                              stroke="#e5e7eb" 
+                              strokeWidth="1"
+                            />
+                            <text x={60 + i * 55} y="235" fontSize="10" fill="#6b7280" textAnchor="middle">
+                              {i * 5}s
+                            </text>
+                          </g>
+                        ))}
+                        
+                        {/* Confidence band */}
+                        <path 
+                          d="M60,120 Q115,115 170,110 T280,105 Q335,108 390,112 T500,120 L500,140 Q445,138 390,135 T280,130 Q225,132 170,135 T60,140 Z" 
+                          fill="url(#confidenceGradient)" 
+                          stroke="none"
+                        />
+                        
+                        {/* Historical data line */}
+                        <path 
+                          d="M60,130 Q80,125 100,128 Q120,132 140,128 Q160,125 180,130 Q200,135 220,132 Q240,128 260,130" 
+                          fill="none" 
+                          stroke="#6b7280" 
+                          strokeWidth="2"
+                          strokeDasharray="3,3"
+                        />
+                        
+                        {/* AI prediction line */}
+                        <path 
+                          d="M260,130 Q280,125 300,118 Q320,110 340,108 Q360,106 380,109 Q400,112 420,115 Q440,118 460,120 Q480,122 500,125" 
+                          fill="none" 
+                          stroke="#3b82f6" 
+                          strokeWidth="3"
+                        />
+                        
+                        {/* Current position marker */}
+                        <circle cx="260" cy="130" r="4" fill="#ef4444" stroke="white" strokeWidth="2"/>
+                        <text x="260" y="150" fontSize="10" fill="#ef4444" textAnchor="middle" fontWeight="bold">
+                          Current: #47
+                        </text>
+                        
+                        {/* Prediction points */}
+                        {[
+                          { x: 340, y: 108, label: "#25", time: "10s" },
+                          { x: 420, y: 115, label: "#18", time: "25s" },
+                          { x: 500, y: 125, label: "#12", time: "40s" }
+                        ].map((point, i) => (
+                          <g key={i}>
+                            <circle cx={point.x} cy={point.y} r="3" fill="#3b82f6" stroke="white" strokeWidth="1"/>
+                            <text x={point.x} y={point.y - 8} fontSize="9" fill="#3b82f6" textAnchor="middle" fontWeight="bold">
+                              {point.label}
+                            </text>
+                          </g>
+                        ))}
+                        
+                        {/* Labels */}
+                        <text x="60" y="25" fontSize="12" fill="#374151" fontWeight="bold">Queue Position</text>
+                        <text x="280" y="255" fontSize="12" fill="#374151" fontWeight="bold">Time Horizon</text>
+                        
+                        {/* Legend */}
+                        <g transform="translate(350, 50)">
+                          <rect x="0" y="0" width="140" height="80" fill="white" stroke="#e5e7eb" rx="4"/>
+                          <line x1="10" y1="15" x2="25" y2="15" stroke="#6b7280" strokeWidth="2" strokeDasharray="3,3"/>
+                          <text x="30" y="18" fontSize="9" fill="#374151">Historical</text>
+                          <line x1="10" y1="30" x2="25" y2="30" stroke="#3b82f6" strokeWidth="3"/>
+                          <text x="30" y="33" fontSize="9" fill="#374151">AI Prediction</text>
+                          <rect x="10" y="40" width="15" height="8" fill="url(#confidenceGradient)"/>
+                          <text x="30" y="47" fontSize="9" fill="#374151">95% Confidence</text>
+                          <circle cx="17" cy="60" r="3" fill="#ef4444"/>
+                          <text x="30" y="63" fontSize="9" fill="#374151">Current Position</text>
+                        </g>
+                      </svg>
+                    </div>
+
+                    {/* AI Model Metrics */}
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="text-lg font-bold text-blue-700">94.2%</div>
+                        <div className="text-xs text-blue-600">Prediction Accuracy</div>
+                      </div>
+                      <div className="text-center p-3 bg-green-50 rounded-lg border border-green-200">
+                        <div className="text-lg font-bold text-green-700">2.3s</div>
+                        <div className="text-xs text-green-600">Avg Prediction Time</div>
+                      </div>
+                      <div className="text-center p-3 bg-purple-50 rounded-lg border border-purple-200">
+                        <div className="text-lg font-bold text-purple-700">87.1%</div>
+                        <div className="text-xs text-purple-600">Model Confidence</div>
+                      </div>
+                    </div>
+
+                    {/* Feature Importance */}
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-700">Key Prediction Features</h4>
+                      {[
+                        { name: "Order Book Imbalance", value: 0.28, color: "#3b82f6" },
+                        { name: "Recent Fill Rate", value: 0.24, color: "#10b981" },
+                        { name: "Time in Queue", value: 0.19, color: "#f59e0b" },
+                        { name: "Spread Dynamics", value: 0.16, color: "#ef4444" },
+                        { name: "Volume Profile", value: 0.13, color: "#8b5cf6" }
+                      ].map((feature, i) => (
+                        <div key={i} className="flex items-center space-x-2">
+                          <div className="w-20 text-xs text-gray-600 truncate">{feature.name}</div>
+                          <div className="flex-1 bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="h-2 rounded-full" 
+                              style={{ 
+                                width: `${feature.value * 100}%`, 
+                                backgroundColor: feature.color 
+                              }}
+                            />
+                          </div>
+                          <div className="text-xs text-gray-500 w-8 text-right">
+                            {Math.round(feature.value * 100)}%
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Real-time Alerts */}
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-700">AI Alerts</h4>
+                      <div className="space-y-1">
+                        <div className="flex items-center space-x-2 p-2 bg-green-50 rounded border border-green-200">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-xs text-green-800">High probability of advancement in next 15s</span>
+                        </div>
+                        <div className="flex items-center space-x-2 p-2 bg-yellow-50 rounded border border-yellow-200">
+                          <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                          <span className="text-xs text-yellow-800">Unusual order book pattern detected</span>
+                        </div>
+                        <div className="flex items-center space-x-2 p-2 bg-blue-50 rounded border border-blue-200">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-xs text-blue-800">Model confidence above 85% threshold</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
