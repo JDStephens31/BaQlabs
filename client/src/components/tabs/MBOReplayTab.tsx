@@ -425,8 +425,139 @@ export default function MBOReplayTab() {
                   <CardTitle>Order Flow Analysis</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-48 w-full bg-muted rounded-lg flex items-center justify-center">
-                    <div className="text-muted-foreground">Order flow intensity heatmap</div>
+                  <div className="space-y-4">
+                    {/* Order Flow Heatmap */}
+                    <div className="h-64 w-full bg-muted rounded-lg relative overflow-hidden">
+                      <svg width="100%" height="100%" className="absolute inset-0">
+                        {/* Price levels (Y-axis) */}
+                        {Array.from({ length: 20 }, (_, i) => {
+                          const y = (i / 20) * 256;
+                          const price = 4155 - (i * 0.25);
+                          return (
+                            <g key={`price-${i}`}>
+                              <text x="5" y={y + 10} className="text-xs fill-muted-foreground" textAnchor="start">
+                                {price.toFixed(2)}
+                              </text>
+                              <line x1="50" y1={y} x2="100%" y2={y} stroke="#374151" strokeWidth="0.5" opacity="0.2" />
+                            </g>
+                          );
+                        })}
+
+                        {/* Time intervals (X-axis) */}
+                        {Array.from({ length: 12 }, (_, i) => {
+                          const x = 50 + (i / 12) * (800 - 50);
+                          const time = `09:${30 + i}`;
+                          return (
+                            <g key={`time-${i}`}>
+                              <text x={x} y="250" className="text-xs fill-muted-foreground" textAnchor="middle">
+                                {time}
+                              </text>
+                              <line x1={x} y1="0" x2={x} y2="240" stroke="#374151" strokeWidth="0.5" opacity="0.2" />
+                            </g>
+                          );
+                        })}
+
+                        {/* Order flow intensity heatmap cells */}
+                        {Array.from({ length: 20 }, (_, priceLevel) => 
+                          Array.from({ length: 12 }, (_, timeSlot) => {
+                            const x = 50 + (timeSlot / 12) * (800 - 50);
+                            const y = (priceLevel / 20) * 240;
+                            const cellWidth = (800 - 50) / 12;
+                            const cellHeight = 240 / 20;
+                            
+                            // Simulate order flow intensity (higher near mid-price)
+                            const midPrice = 10;
+                            const distanceFromMid = Math.abs(priceLevel - midPrice);
+                            const baseIntensity = Math.max(0, 1 - distanceFromMid / 10);
+                            const randomVariation = Math.random() * 0.5;
+                            const intensity = Math.min(1, baseIntensity + randomVariation);
+                            
+                            // Color based on intensity (red for selling pressure, green for buying pressure)
+                            const isBuyPressure = priceLevel < midPrice;
+                            const opacity = intensity * 0.8;
+                            const color = isBuyPressure ? "#10b981" : "#ef4444";
+                            
+                            return (
+                              <rect
+                                key={`cell-${priceLevel}-${timeSlot}`}
+                                x={x}
+                                y={y}
+                                width={cellWidth - 1}
+                                height={cellHeight - 1}
+                                fill={color}
+                                opacity={opacity}
+                                className="hover:opacity-100 transition-opacity"
+                              >
+                                <title>
+                                  {`Price: ${(4155 - priceLevel * 0.25).toFixed(2)}, Time: 09:${30 + timeSlot}, Intensity: ${(intensity * 100).toFixed(0)}%`}
+                                </title>
+                              </rect>
+                            );
+                          })
+                        )}
+
+                        {/* Current price line */}
+                        <line 
+                          x1="50" 
+                          y1="120" 
+                          x2="100%" 
+                          y2="120" 
+                          stroke="#3b82f6" 
+                          strokeWidth="2"
+                          strokeDasharray="4,4"
+                        />
+                        <text x="55" y="115" className="text-xs fill-blue-500 font-medium">
+                          Current: 4152.25
+                        </text>
+                      </svg>
+                    </div>
+
+                    {/* Legend and Controls */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-4 h-4 bg-green-500 rounded"></div>
+                          <span className="text-sm">Buy Pressure</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-4 h-4 bg-red-500 rounded"></div>
+                          <span className="text-sm">Sell Pressure</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-4 h-4 bg-blue-500 rounded border-2 border-dashed border-blue-500"></div>
+                          <span className="text-sm">Current Price</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                        <span>Intensity Scale:</span>
+                        <div className="flex space-x-1">
+                          {[0.2, 0.4, 0.6, 0.8, 1.0].map((opacity) => (
+                            <div 
+                              key={opacity}
+                              className="w-4 h-4 bg-blue-500 rounded" 
+                              style={{ opacity }}
+                            ></div>
+                          ))}
+                        </div>
+                        <span>High</span>
+                      </div>
+                    </div>
+
+                    {/* Order Flow Metrics */}
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center p-3 bg-muted/50 rounded">
+                        <div className="text-lg font-mono font-bold text-green-600">+2.3M</div>
+                        <div className="text-xs text-muted-foreground">Net Buy Flow</div>
+                      </div>
+                      <div className="text-center p-3 bg-muted/50 rounded">
+                        <div className="text-lg font-mono font-bold">67%</div>
+                        <div className="text-xs text-muted-foreground">Aggressive Buys</div>
+                      </div>
+                      <div className="text-center p-3 bg-muted/50 rounded">
+                        <div className="text-lg font-mono font-bold text-orange-600">0.15</div>
+                        <div className="text-xs text-muted-foreground">Flow Imbalance</div>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
