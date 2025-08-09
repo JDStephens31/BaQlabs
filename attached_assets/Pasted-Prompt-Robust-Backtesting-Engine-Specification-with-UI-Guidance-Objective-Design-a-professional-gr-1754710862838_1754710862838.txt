@@ -1,0 +1,206 @@
+Prompt: Robust Backtesting Engine Specification with UI Guidance
+Objective:
+Design a professional-grade backtesting engine for algorithmic trading that supports historical simulation, model evaluation, and strategy refinement. The UI should be intuitive, data-rich, and optimized for both detailed analysis and quick experimentation.
+
+The goal is to replicate live trading conditions as closely as possible, ensuring realistic simulation and actionable insights.
+
+Core Functions
+(See previous detailed section — unchanged)
+Historical playback, order simulation, risk management, metrics, experiment management, and simulation fidelity recommendations remain the same.
+
+UI Layout & Design Requirements
+The interface should be black & white (monochrome) for professional clarity, with optional subtle accents (light grays, dotted lines, hatching). No color heatmaps — instead, use patterns, opacity, and thickness to convey data intensity.
+
+Primary Screen Layout
+mathematica
+Copy
+Edit
+┌────────────────────────────────────────────────────────────────────────────┐
+│  Top Bar: Project / Dataset / Symbol / Session Time / Run & Control Buttons │
+├───────────────┬──────────────────────────────────────────┬─────────────────┤
+│ Left Sidebar  │                Main Canvas               │ Right Inspector │
+│───────────────│ Tabs: STRATEGY | MBO REPLAY | RESULTS ... │─────────────────│
+│ • Datasets    │                                            │  Context config │
+│ • Strategies  │ Active tab content here                    │  Trade details │
+│ • Models      │                                            │  Risk settings │
+│ • Experiments │                                            │  Order params  │
+│ • Reports     │                                            │                 │
+├───────────────┴──────────────────────────────────────────┴─────────────────┤
+│ Console / Event Log: Warnings, Compile Logs, Order & Fill Messages          │
+└────────────────────────────────────────────────────────────────────────────┘
+Tab-Specific UI Guidance
+1. STRATEGY TAB (Authoring + Parameters)
+Left Panel (Code Editor)
+
+Monospaced code area, syntax highlighting.
+
+Example mock snippet:
+
+js
+Copy
+Edit
+// Strategy: Maker Queue Aware
+if (imbalance > 0.6 && churnRising) joinBid();
+else if (imbalance < -0.6 && churnRising) joinAsk();
+Right Panel (Parameters)
+
+Fields:
+
+Time Window: 06:00–15:30 PST
+
+Fees: 0.45 bps
+
+Tick / Lot: 0.25 / 1
+
+Risk: TP 8 / SL 6
+
+Use MBO: ✓
+
+Use Latency: ✓ (profile: Gaussian 10±3ms)
+
+Mock Controls Example:
+
+css
+Copy
+Edit
+[1-Day Smoke Test]  [Run Full Backtest]
+2. MBO REPLAY TAB (Market microstructure view)
+Left Column (DOM Ladder)
+Mock data example:
+
+markdown
+Copy
+Edit
+  20005.25    42
+  20005.00    66
+> 20004.75   150
+  20004.50    92
+> marks inside market.
+
+Depth represented by thicker borders or shaded rectangles.
+
+Right Column (Event Tape)
+Mock events:
+
+sql
+Copy
+Edit
+09:31:12.482  ADD BID 4@20004.75
+09:31:12.486  CANCEL BID 2@20004.75
+09:31:12.490  TRADE ASK 3@20005.00
+Use dots for adds, × for cancels, solid blocks for trades.
+
+Bottom Panel (Selected Order Trace)
+
+yaml
+Copy
+Edit
+Join Time: 09:31:12.482
+Queue Rank: 128 → 34 → 0
+Size Ahead: 142 → 68 → 0
+ETA to Fill: ~ 220ms
+3. RESULTS TAB (Performance analytics)
+Main Chart: Equity Curve
+
+Black line for PnL, gray hatch for drawdown.
+
+Mock data:
+
+yaml
+Copy
+Edit
+Start: $10,000
+End: $28,420
+Max DD: -$3,900
+Hit Rate: 54.8%
+Sharpe: 2.1
+Secondary Panels:
+
+Trade PnL Histogram: black bars, varied opacity.
+
+Holding Time Distribution: violin or bar style, grayscale.
+
+Execution Attribution: slippage vs latency vs model logic.
+
+4. QUEUE TAB (Queue position analysis)
+Top Chart: Queue Rank vs Time (lower is better).
+Mock run:
+
+pgsql
+Copy
+Edit
+Avg rank on join: 128
+Avg rank before fill: 12
+Lost priority on modify: 18%
+Secondary Panels: Size-Ahead Curve, Fill Probability Projection.
+
+5. LATENCY LAB TAB (Impact of delays)
+Left Panel: Latency configuration.
+Mock:
+
+makefile
+Copy
+Edit
+Profile: Gaussian
+Mean: 10 ms
+StdDev: 3 ms
+Burst: 5% chance of 30–80 ms
+Right Panel:
+
+PnL vs Latency curve
+
+Fill Ratio vs Latency
+
+Queue Degradation chart
+
+6. MODEL LAB TAB (Model training + deployment)
+Panels:
+
+Dataset window preview
+
+Model type selector
+
+Training controls
+
+Calibration curve
+
+Feature importances
+
+Mock model metrics:
+
+makefile
+Copy
+Edit
+AUC/PR: 0.72
+Brier: 0.118
+ECE: 1.9%
+UI Interaction Recommendations
+Crosshair Linking: Hovering over a timestamp in one chart highlights the same moment in others.
+
+Compare Mode: Overlay results from two runs across all visuals.
+
+Right-Click Actions: On a trade → “Open in MBO Replay at timestamp.”
+
+Session Snaps: Buttons for “Open Only,” “Lunch,” “Close Only” filtering.
+
+Command Palette (⌘K): Run commands quickly: “Run backtest,” “Open Queue,” “Toggle Latency.”
+
+Mock Run Example
+When user clicks Run Full Backtest:
+
+markdown
+Copy
+Edit
+> Compiling strategy...
+> Running backtest on NQ 2025-08 (5 days)...
+> Orders placed: 612 | Fills: 487 | Win% 55 | PF 1.62 | Sharpe 2.1
+> Done. See Results tab for charts.
+Best Practices for the UI
+Keep dense but legible layouts — trading professionals prefer more data on screen rather than whitespace.
+
+Use subtle animations for event tape, queue position changes, and chart updates.
+
+Provide persistent parameter sidebar so users can tweak settings without switching tabs.
+
+All outputs should be exportable (CSV, JSON, PDF snapshot).
+
