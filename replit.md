@@ -1,6 +1,13 @@
 # Overview
 
-This is a professional-grade backtesting engine for algorithmic trading strategies. The application provides a comprehensive platform for developing, testing, and analyzing trading algorithms with realistic market simulation capabilities. It features a sophisticated web interface with multiple specialized tabs for strategy development, market data replay, performance analysis, queue position tracking, latency modeling, and machine learning integration.
+This is a professional-grade backtesting engine for algorithmic trading strategies with advanced queue-aware market microstructure simulation. The application provides a comprehensive platform for developing, testing, and analyzing trading algorithms with realistic NQ futures market simulation capabilities. It features a sophisticated web interface with multiple specialized tabs for strategy development, market data replay, performance analysis, queue position tracking, latency modeling, and machine learning integration.
+
+## Recent Major Enhancements (August 2025)
+- **Queue-Aware Trading Engine**: Complete queue position tracking and realistic order book dynamics
+- **NQ Futures Specialization**: Optimized for NQ futures trading in the 23770-23800 price range
+- **Interactive Strategy Development**: Real-time code compilation with dynamic parameter modification
+- **Advanced Market Simulation**: Realistic order book imbalance calculations and fill probability modeling
+- **Comprehensive Risk Management**: Dynamic position limits with queue-aware execution logic
 
 # User Preferences
 
@@ -36,14 +43,18 @@ The application is designed for PostgreSQL with Drizzle ORM:
 ## Key Features Architecture
 
 ### Strategy Development
-- **Code Editor**: Monospaced editor with syntax highlighting for JavaScript-based trading strategies
-- **Parameter Configuration**: Dynamic form-based parameter management with validation
-- **Compilation Pipeline**: Real-time strategy validation and compilation feedback
+- **Interactive Code Editor**: Monospaced editor with syntax highlighting for JavaScript-based trading strategies
+- **Dynamic Parameter Configuration**: Real-time parameter modification with queue threshold controls
+- **Real-time Compilation Pipeline**: Live strategy validation and compilation feedback with error display
+- **Queue-Aware Logic**: Built-in support for order book imbalance calculations and queue position estimation
+- **NQ Futures Templates**: Pre-configured strategies optimized for NQ futures trading (23770-23800 range)
 
 ### Market Data Simulation
-- **MBO (Market By Order) Replay**: Granular order book reconstruction from historical data
-- **Queue Position Tracking**: Realistic order queue simulation with rank tracking
-- **Latency Modeling**: Configurable latency profiles (Gaussian, uniform, exponential) for realistic execution simulation
+- **Enhanced MBO (Market By Order) Replay**: Granular order book reconstruction with realistic NQ market dynamics
+- **Advanced Queue Position Tracking**: Real-time queue rank estimation with fill probability modeling
+- **Dynamic Pricing Simulation**: Live price movement within 23770-23800 NQ range with realistic volume patterns
+- **Latency Modeling**: Configurable latency profiles with queue-aware execution delays
+- **Market Microstructure**: Order book imbalance calculations and depth-weighted volume analysis
 
 ### Performance Analytics
 - **Real-time Charting**: Custom canvas-based charting for equity curves and performance metrics
