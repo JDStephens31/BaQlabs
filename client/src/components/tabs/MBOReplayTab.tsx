@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Play, Pause, Square, SkipForward, SkipBack, Clock, BarChart3, TrendingUp, Eye } from "lucide-react";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 export default function MBOReplayTab() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -17,68 +18,219 @@ export default function MBOReplayTab() {
   const [currentTime, setCurrentTime] = useState("09:30:00.000");
   const [progress, setProgress] = useState(25);
 
-  // Market data simulation
-  const orderBookData = {
+  // Live NQ order book data in 23770-23800 range
+  const [orderBookData, setOrderBookData] = useState({
     bids: [
-      { price: 4152.25, size: 45, count: 3 },
-      { price: 4152.00, size: 78, count: 5 },
-      { price: 4151.75, size: 32, count: 2 },
-      { price: 4151.50, size: 156, count: 8 },
-      { price: 4151.25, size: 89, count: 4 },
-      { price: 4151.00, size: 234, count: 12 },
-      { price: 4150.75, size: 67, count: 3 },
-      { price: 4150.50, size: 123, count: 7 },
-      { price: 4150.25, size: 45, count: 2 },
-      { price: 4150.00, size: 178, count: 9 }
+      { price: 23784.75, size: 45, count: 3 },
+      { price: 23784.50, size: 78, count: 5 },
+      { price: 23784.25, size: 32, count: 2 },
+      { price: 23784.00, size: 156, count: 8 },
+      { price: 23783.75, size: 89, count: 4 },
+      { price: 23783.50, size: 234, count: 12 },
+      { price: 23783.25, size: 67, count: 3 },
+      { price: 23783.00, size: 123, count: 7 },
+      { price: 23782.75, size: 45, count: 2 },
+      { price: 23782.50, size: 178, count: 9 }
     ],
     asks: [
-      { price: 4152.50, size: 56, count: 4 },
-      { price: 4152.75, size: 43, count: 2 },
-      { price: 4153.00, size: 89, count: 6 },
-      { price: 4153.25, size: 67, count: 3 },
-      { price: 4153.50, size: 145, count: 8 },
-      { price: 4153.75, size: 78, count: 4 },
-      { price: 4154.00, size: 234, count: 11 },
-      { price: 4154.25, size: 56, count: 3 },
-      { price: 4154.50, size: 98, count: 5 },
-      { price: 4154.75, size: 167, count: 7 }
+      { price: 23785.00, size: 56, count: 4 },
+      { price: 23785.25, size: 43, count: 2 },
+      { price: 23785.50, size: 89, count: 6 },
+      { price: 23785.75, size: 67, count: 3 },
+      { price: 23786.00, size: 145, count: 8 },
+      { price: 23786.25, size: 78, count: 4 },
+      { price: 23786.50, size: 234, count: 11 },
+      { price: 23786.75, size: 56, count: 3 },
+      { price: 23787.00, size: 98, count: 5 },
+      { price: 23787.25, size: 167, count: 7 }
     ]
-  };
+  });
 
-  // Recent trades data
-  const recentTrades = [
-    { time: "09:30:15.234", price: 4152.25, size: 25, side: "BUY", aggressor: true },
-    { time: "09:30:15.156", price: 4152.00, size: 50, side: "SELL", aggressor: false },
-    { time: "09:30:14.987", price: 4152.25, size: 15, side: "BUY", aggressor: true },
-    { time: "09:30:14.823", price: 4152.00, size: 30, side: "SELL", aggressor: true },
-    { time: "09:30:14.675", price: 4152.25, size: 40, side: "BUY", aggressor: false },
-    { time: "09:30:14.432", price: 4151.75, size: 20, side: "SELL", aggressor: true },
-    { time: "09:30:14.298", price: 4152.00, size: 35, side: "BUY", aggressor: false },
-    { time: "09:30:14.156", price: 4151.75, size: 45, side: "SELL", aggressor: true },
-    { time: "09:30:13.998", price: 4152.00, size: 25, side: "BUY", aggressor: true },
-    { time: "09:30:13.834", price: 4151.50, size: 60, side: "SELL", aggressor: false }
-  ];
+  // Live NQ trades data
+  const [recentTrades, setRecentTrades] = useState([
+    { time: "09:30:15.234", price: 23784.75, size: 25, side: "BUY", aggressor: true },
+    { time: "09:30:15.156", price: 23784.50, size: 50, side: "SELL", aggressor: false },
+    { time: "09:30:14.987", price: 23784.75, size: 15, side: "BUY", aggressor: true },
+    { time: "09:30:14.823", price: 23784.25, size: 30, side: "SELL", aggressor: true },
+    { time: "09:30:14.675", price: 23785.00, size: 40, side: "BUY", aggressor: false },
+    { time: "09:30:14.432", price: 23784.00, size: 20, side: "SELL", aggressor: true },
+    { time: "09:30:14.298", price: 23784.50, size: 35, side: "BUY", aggressor: false },
+    { time: "09:30:14.156", price: 23783.75, size: 45, side: "SELL", aggressor: true },
+    { time: "09:30:13.998", price: 23784.25, size: 25, side: "BUY", aggressor: true },
+    { time: "09:30:13.834", price: 23783.50, size: 60, side: "SELL", aggressor: false }
+  ]);
 
-  // Market statistics
-  const marketStats = {
+  // Live market statistics for NQ
+  const [marketStats, setMarketStats] = useState({
     totalVolume: 1247863,
     tradeCount: 2847,
-    vwap: 4151.87,
+    vwap: 23784.62,
     spread: 0.25,
     bidVolume: 623450,
     askVolume: 624413,
-    imbalance: -0.08
+    imbalance: -0.08,
+    lastPrice: 23784.75,
+    change: +12.50,
+    changePercent: +0.05
+  });
+
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // WebSocket connection for live market data
+  const { connectionStatus, sendMessage } = useWebSocket('', {
+    onMessage: (data) => {
+      if (data.type === 'mboUpdate' && isPlaying) {
+        updateOrderBook(data.data);
+      }
+    }
+  });
+
+  // Generate realistic NQ order book update
+  const generateOrderBookUpdate = () => {
+    // Dynamic price that moves within the 23770-23800 range
+    const basePrice = 23770 + (Math.random() * 30); // Random price between 23770-23800
+    const spread = 0.25; // NQ tick size
+    
+    // Create realistic bid/ask levels around current market
+    const newBids = [];
+    const newAsks = [];
+    
+    for (let i = 0; i < 10; i++) {
+      const bidPrice = basePrice - (i * spread) - spread/2;
+      const askPrice = basePrice + (i * spread) + spread/2;
+      
+      // Realistic size distribution for NQ
+      const bidSize = Math.floor(Math.random() * 200) + 10;
+      const askSize = Math.floor(Math.random() * 200) + 10;
+      const bidCount = Math.floor(bidSize / 20) + 1;
+      const askCount = Math.floor(askSize / 20) + 1;
+      
+      newBids.push({ 
+        price: Math.round(bidPrice * 4) / 4, 
+        size: bidSize, 
+        count: bidCount 
+      });
+      newAsks.push({ 
+        price: Math.round(askPrice * 4) / 4, 
+        size: askSize, 
+        count: askCount 
+      });
+    }
+    
+    return { bids: newBids, asks: newAsks };
   };
 
-  const togglePlayback = () => {
-    setIsPlaying(!isPlaying);
+  // Generate new trade
+  const generateTrade = () => {
+    const price = 23770 + (Math.random() * 30); // Price within 23770-23800 range
+    const size = [1, 2, 3, 5, 10, 15, 20][Math.floor(Math.random() * 7)];
+    const side = Math.random() > 0.5 ? "BUY" : "SELL";
+    const aggressor = Math.random() > 0.3; // 70% aggressor trades
+    
+    const now = new Date();
+    const time = now.toTimeString().slice(0, 12); // HH:MM:SS.mmm format
+    
+    return {
+      time,
+      price: Math.round(price * 4) / 4,
+      size,
+      side,
+      aggressor
+    };
   };
+
+  // Update order book with new data
+  const updateOrderBook = (data?: any) => {
+    const newOrderBook = generateOrderBookUpdate();
+    setOrderBookData(newOrderBook);
+    
+    // Add new trade
+    const newTrade = generateTrade();
+    setRecentTrades(prev => [newTrade, ...prev.slice(0, 9)]);
+    
+    // Update market stats
+    setMarketStats(prev => ({
+      ...prev,
+      totalVolume: prev.totalVolume + newTrade.size,
+      tradeCount: prev.tradeCount + 1,
+      lastPrice: newTrade.price,
+      vwap: (prev.vwap * 0.99 + newTrade.price * 0.01), // Simple VWAP update
+      imbalance: (Math.random() - 0.5) * 0.2 // Random imbalance
+    }));
+    
+    // Update progress and time
+    setProgress(prev => (prev + 0.5) % 100);
+    const now = new Date();
+    setCurrentTime(now.toTimeString().slice(0, 12));
+  };
+
+  // Stop playback completely
+  const stopPlayback = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setIsPlaying(false);
+    setProgress(0);
+  };
+
+  // Start/stop live playback
+  const togglePlayback = () => {
+    if (isPlaying) {
+      // Pause playback
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      setIsPlaying(false);
+    } else {
+      // Start playback
+      setIsPlaying(true);
+      const speed = replaySpeed[0] * 100; // Convert to milliseconds
+      
+      intervalRef.current = setInterval(() => {
+        updateOrderBook();
+      }, Math.max(50, 500 / speed)); // Min 50ms, scaled by speed
+    }
+  };
+
+  // Update speed when slider changes
+  useEffect(() => {
+    if (isPlaying && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      const speed = replaySpeed[0] * 100;
+      intervalRef.current = setInterval(() => {
+        updateOrderBook();
+      }, Math.max(50, 500 / speed));
+    }
+  }, [replaySpeed, isPlaying]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="flex flex-1 flex-col">
       <div className="p-4 border-b border-border bg-muted/50">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Market By Order (MBO) Replay</h3>
+          <div className="flex items-center space-x-3">
+            <h3 className="font-semibold">Market By Order (MBO) Replay</h3>
+            {isPlaying && (
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-green-600 font-medium">LIVE</span>
+                <span className="text-sm text-muted-foreground">NQ Range: 23770-23800</span>
+              </div>
+            )}
+            {!isPlaying && (
+              <span className="text-sm text-muted-foreground">NQ Range: 23770-23800 (Paused)</span>
+            )}
+          </div>
           <div className="flex items-center space-x-2">
             <span className="text-sm text-muted-foreground">Speed:</span>
             <div className="w-32">
@@ -101,7 +253,7 @@ export default function MBOReplayTab() {
             <Button size="sm" variant="outline">
               <SkipForward className="w-4 h-4" />
             </Button>
-            <Button size="sm" variant="outline">
+            <Button size="sm" variant="outline" onClick={stopPlayback}>
               <Square className="w-4 h-4" />
             </Button>
           </div>

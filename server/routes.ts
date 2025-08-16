@@ -149,26 +149,38 @@ async function runBacktestWithProgress(strategyId: string, datasetId: string, ws
 function generateNQMarketData() {
   const data = [];
   const startTime = new Date();
-  let currentPrice = 23713;
+  let currentPrice = 23785; // Start in the middle of 23770-23800 range
   
-  // Generate 2000 market events
-  for (let i = 0; i < 2000; i++) {
-    const timestamp = new Date(startTime.getTime() + i * 2000); // 2 second intervals
+  // Generate 5000 market events for realistic MBO replay
+  for (let i = 0; i < 5000; i++) {
+    const timestamp = new Date(startTime.getTime() + i * 100); // 100ms intervals for realistic speed
     
-    // NQ futures price movement simulation
-    const priceChange = (Math.random() - 0.48) * 0.5; // 0.25 tick size
-    currentPrice = Math.max(23650, Math.min(23750, currentPrice + priceChange));
+    // NQ futures price movement within 23770-23800 range
+    const priceChange = (Math.random() - 0.5) * 0.75; // More realistic price volatility
+    currentPrice = Math.max(23770, Math.min(23800, currentPrice + priceChange));
     
-    const eventType = Math.random() < 0.6 ? 'ADD' : Math.random() < 0.9 ? 'TRADE' : 'CANCEL';
+    // Realistic event distribution for MBO
+    const rand = Math.random();
+    let eventType;
+    if (rand < 0.50) eventType = 'ADD';      // 50% new orders
+    else if (rand < 0.80) eventType = 'TRADE'; // 30% trades
+    else eventType = 'CANCEL';                  // 20% cancellations
+    
     const side = Math.random() < 0.5 ? 'BID' : 'ASK';
+    const tickPrice = Math.round(currentPrice * 4) / 4; // Round to NQ tick size (0.25)
+    
+    // Realistic order sizes for NQ futures
+    const orderSizes = [1, 2, 3, 5, 10, 15, 20, 25, 50];
+    const size = orderSizes[Math.floor(Math.random() * orderSizes.length)];
     
     data.push({
       timestamp,
       eventType,
       side,
-      price: Math.round(currentPrice * 4) / 4, // Round to nearest 0.25
-      size: Math.floor(Math.random() * 20) + 1,
-      orderId: `nq_order_${i}`
+      price: tickPrice,
+      size,
+      orderId: `nq_${Date.now()}_${i}`,
+      symbol: 'NQH25'
     });
   }
   
