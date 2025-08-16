@@ -6,7 +6,12 @@ import { Link } from "wouter";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 via-blue-900 to-slate-900 relative overflow-hidden">
+      {/* Additional gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 via-transparent to-blue-600/10"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl"></div>
+      <div className="relative z-10">
       {/* Header */}
       <header className="border-b border-white/10 backdrop-blur-sm bg-black/20">
         <div className="container mx-auto px-6 py-4">
@@ -41,29 +46,29 @@ export default function LandingPage() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
-              <Badge className="bg-blue-600/20 text-blue-400 border-blue-500/30">
-                AI-Powered Trading Engine
+              <Badge className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-400 border-purple-500/30">
+                AI-Powered Backtesting Engine
               </Badge>
               <h1 className="text-5xl font-bold text-white leading-tight">
                 AI copilot that helps you{" "}
-                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                  trade smarter
+                <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                  backtest smarter
                 </span>
               </h1>
               <p className="text-xl text-gray-300 leading-relaxed">
-                Professional-grade algorithmic trading platform with advanced backtesting, 
-                queue-aware market simulation, and real-time strategy optimization for NQ futures.
+                Professional-grade backtesting platform with advanced strategy development, 
+                queue-aware market simulation, and comprehensive model training for NQ futures strategies.
               </p>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/backtesting">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 group">
-                  Start Trading
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 group">
+                  Start Backtesting
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 group">
+              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-gradient-to-r hover:from-white/10 hover:to-blue-500/10 group">
                 <Play className="mr-2 w-4 h-4" />
                 Watch Demo
               </Button>
@@ -73,7 +78,7 @@ export default function LandingPage() {
               <div className="flex items-center space-x-2">
                 <Star className="w-5 h-5 text-yellow-400" />
                 <span className="text-white font-semibold">4.9/5</span>
-                <span className="text-gray-400">from 2,500+ traders</span>
+                <span className="text-gray-400">from 2,500+ quants</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Users className="w-5 h-5 text-blue-400" />
@@ -84,13 +89,13 @@ export default function LandingPage() {
           </div>
 
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-2xl blur-3xl"></div>
-            <Card className="relative bg-black/40 border-white/10 backdrop-blur-sm">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-cyan-600/20 rounded-2xl blur-3xl"></div>
+            <Card className="relative bg-gradient-to-br from-black/40 to-blue-900/20 border-white/10 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-400">Live Strategy Performance</span>
-                    <Badge className="bg-green-600/20 text-green-400 border-green-500/30">
+                    <span className="text-sm text-gray-400">Backtest Results</span>
+                    <Badge className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 text-green-400 border-green-500/30">
                       +12.4%
                     </Badge>
                   </div>
@@ -130,10 +135,13 @@ export default function LandingPage() {
       <section id="features" className="container mx-auto px-6 py-20">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-white mb-4">
-            Make Trading Smarter
+            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              Build & Test
+            </span>{" "}
+            Trading Strategies
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Advanced AI-powered tools designed for professional algorithmic trading
+            Advanced AI-powered backtesting engine with strategy development, model training, and comprehensive market simulation
           </p>
         </div>
 
@@ -142,45 +150,45 @@ export default function LandingPage() {
             {
               icon: Brain,
               title: "AI Strategy Development",
-              description: "Interactive code editor with real-time compilation and queue-aware logic for NQ futures",
-              features: ["Real-time compilation", "Queue position tracking", "Risk management"]
+              description: "Interactive code editor with real-time compilation and queue-aware backtesting logic",
+              features: ["Real-time compilation", "Strategy templates", "Parameter optimization"]
             },
             {
               icon: BarChart3,
               title: "Advanced Backtesting",
               description: "Comprehensive backtesting engine with realistic market microstructure simulation",
-              features: ["Queue-aware execution", "Live market data", "Performance analytics"]
+              features: ["Queue-aware execution", "Historical data replay", "Performance metrics"]
             },
             {
               icon: TrendingUp,
-              title: "Market Simulation",
-              description: "Dynamic pricing simulation within 23770-23800 NQ range with realistic volume patterns",
-              features: ["Order book imbalance", "Fill probability", "Latency modeling"]
+              title: "Model Training & Validation",
+              description: "Train and validate trading models with dynamic pricing simulation for NQ futures",
+              features: ["Model validation", "Cross-validation", "Out-of-sample testing"]
             },
             {
               icon: Code,
-              title: "Strategy Editor",
-              description: "Professional code editor with syntax highlighting and dynamic parameter modification",
+              title: "Strategy Development",
+              description: "Professional strategy authoring with syntax highlighting and dynamic parameter modification",
               features: ["Live validation", "Error detection", "Template library"]
             },
             {
               icon: Zap,
-              title: "Real-time Execution",
-              description: "WebSocket-powered live trading with queue position estimation and dynamic fills",
-              features: ["Live queue tracking", "Instant updates", "Low latency"]
+              title: "Market Data Replay",
+              description: "MBO (Market By Order) replay with queue position tracking and realistic fills",
+              features: ["Historical replay", "Queue simulation", "Latency modeling"]
             },
             {
               icon: Shield,
-              title: "Risk Management",
-              description: "Comprehensive risk controls with position limits and dynamic stop-loss mechanisms",
-              features: ["Position limits", "Auto stop-loss", "Drawdown control"]
+              title: "Risk Analytics",
+              description: "Comprehensive risk analysis with drawdown controls and position size optimization",
+              features: ["Risk metrics", "Drawdown analysis", "Position sizing"]
             }
           ].map((feature, index) => (
-            <Card key={index} className="bg-black/40 border-white/10 backdrop-blur-sm hover:border-blue-500/30 transition-colors">
+            <Card key={index} className="bg-gradient-to-br from-black/40 to-purple-900/10 border-white/10 backdrop-blur-sm hover:border-purple-500/30 transition-all duration-300 hover:scale-105">
               <CardContent className="p-6">
                 <div className="space-y-4">
-                  <div className="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center">
-                    <feature.icon className="w-6 h-6 text-blue-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-600/20 to-blue-600/20 rounded-lg flex items-center justify-center">
+                    <feature.icon className="w-6 h-6 text-purple-400" />
                   </div>
                   <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
                   <p className="text-gray-300">{feature.description}</p>
@@ -206,7 +214,7 @@ export default function LandingPage() {
             Simple and Reliable Pricing
           </h2>
           <p className="text-xl text-gray-300">
-            Choose the plan that fits your trading needs
+            Choose the plan that fits your backtesting and model development needs
           </p>
         </div>
 
@@ -216,13 +224,13 @@ export default function LandingPage() {
               name: "Starter",
               price: "$29",
               period: "/month",
-              description: "Perfect for individual traders",
+              description: "Perfect for individual quants",
               features: [
                 "Basic backtesting engine",
-                "5 strategies",
-                "Historical data access",
+                "5 strategy slots",
+                "Historical NQ data access",
                 "Email support",
-                "Basic analytics"
+                "Basic performance analytics"
               ],
               popular: false
             },
@@ -230,14 +238,14 @@ export default function LandingPage() {
               name: "Professional",
               price: "$99",
               period: "/month",
-              description: "Advanced features for serious traders",
+              description: "Advanced features for serious researchers",
               features: [
                 "Queue-aware backtesting",
                 "Unlimited strategies",
-                "Real-time market data",
-                "Priority support",
+                "MBO data replay",
+                "Model training tools",
                 "Advanced analytics",
-                "Risk management tools",
+                "Risk assessment tools",
                 "API access"
               ],
               popular: true
@@ -246,23 +254,23 @@ export default function LandingPage() {
               name: "Enterprise",
               price: "$299",
               period: "/month",
-              description: "Complete solution for trading firms",
+              description: "Complete solution for research teams",
               features: [
                 "Everything in Professional",
-                "Multi-user accounts",
-                "Custom integrations",
+                "Multi-user workspaces",
+                "Custom model integrations",
                 "Dedicated support",
-                "White-label options",
-                "Advanced reporting",
+                "White-label backtesting",
+                "Advanced reporting suite",
                 "SLA guarantee"
               ],
               popular: false
             }
           ].map((plan, index) => (
-            <Card key={index} className={`relative bg-black/40 border-white/10 backdrop-blur-sm ${plan.popular ? 'border-blue-500/50 scale-105' : ''}`}>
+            <Card key={index} className={`relative bg-gradient-to-br from-black/40 to-slate-900/40 border-white/10 backdrop-blur-sm ${plan.popular ? 'border-purple-500/50 scale-105 bg-gradient-to-br from-purple-900/20 to-blue-900/20' : ''}`}>
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-blue-600 text-white">Most Popular</Badge>
+                  <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-none">Most Popular</Badge>
                 </div>
               )}
               <CardContent className="p-8">
@@ -286,7 +294,7 @@ export default function LandingPage() {
                     ))}
                   </ul>
                   
-                  <Button className={`w-full ${plan.popular ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-700 hover:bg-gray-600'}`}>
+                  <Button className={`w-full ${plan.popular ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700' : 'bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500'}`}>
                     Get Started
                   </Button>
                 </div>
@@ -300,20 +308,23 @@ export default function LandingPage() {
       <section className="container mx-auto px-6 py-20">
         <div className="text-center space-y-8">
           <h2 className="text-4xl font-bold text-white">
-            Your AI-powered partner for smarter trading
+            Your AI-powered partner for{" "}
+            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              smarter backtesting
+            </span>
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Join thousands of traders using AlgoTrader Pro to build, test, and deploy 
-            profitable trading strategies with advanced queue-aware simulation.
+            Join thousands of quantitative researchers using AlgoTrader Pro to build, backtest, and validate 
+            profitable trading strategies with advanced queue-aware market simulation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/backtesting">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 group">
-                Start Trading Now
+              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 group">
+                Start Backtesting Now
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10">
+            <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-gradient-to-r hover:from-white/10 hover:to-purple-500/10">
               Schedule Demo
             </Button>
           </div>
@@ -332,7 +343,7 @@ export default function LandingPage() {
                 <span className="text-xl font-bold text-white">AlgoTrader Pro</span>
               </div>
               <p className="text-gray-400">
-                Professional algorithmic trading platform with AI-powered strategy development.
+                Professional backtesting platform with AI-powered strategy development and model training.
               </p>
             </div>
             
@@ -374,6 +385,7 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 }
