@@ -186,11 +186,19 @@ export default function MBOReplayTab() {
     } else {
       // Start playback
       setIsPlaying(true);
-      const speed = replaySpeed[0] * 100; // Convert to milliseconds
+      // Calculate interval: much slower speeds possible
+      // Speed 0.1 = 10 seconds, Speed 0.5 = 2 seconds, Speed 1 = 1 second, Speed 2 = 500ms, Speed 5 = 200ms
+      let interval;
+      if (replaySpeed[0] <= 1) {
+        interval = 1000 / replaySpeed[0]; // 0.1 = 10000ms, 0.5 = 2000ms, 1 = 1000ms
+      } else {
+        interval = 1000 / replaySpeed[0]; // 2 = 500ms, 5 = 200ms
+      }
+      interval = Math.max(100, interval); // Minimum 100ms
       
       intervalRef.current = setInterval(() => {
         updateOrderBook();
-      }, Math.max(50, 500 / speed)); // Min 50ms, scaled by speed
+      }, interval);
     }
   };
 
@@ -198,10 +206,18 @@ export default function MBOReplayTab() {
   useEffect(() => {
     if (isPlaying && intervalRef.current) {
       clearInterval(intervalRef.current);
-      const speed = replaySpeed[0] * 100;
+      // Recalculate interval with new speed
+      let interval;
+      if (replaySpeed[0] <= 1) {
+        interval = 1000 / replaySpeed[0];
+      } else {
+        interval = 1000 / replaySpeed[0];
+      }
+      interval = Math.max(100, interval);
+      
       intervalRef.current = setInterval(() => {
         updateOrderBook();
-      }, Math.max(50, 500 / speed));
+      }, interval);
     }
   }, [replaySpeed, isPlaying]);
 
@@ -237,13 +253,21 @@ export default function MBOReplayTab() {
               <Slider
                 value={replaySpeed}
                 onValueChange={setReplaySpeed}
-                max={10}
+                max={5}
                 min={0.1}
                 step={0.1}
                 className="h-6"
               />
             </div>
-            <span className="text-sm font-mono w-12">{replaySpeed[0]}x</span>
+            <div className="text-right">
+              <span className="text-sm font-mono">{replaySpeed[0].toFixed(1)}x</span>
+              <div className="text-xs text-muted-foreground">
+                {replaySpeed[0] <= 0.2 ? 'Very Slow' : 
+                 replaySpeed[0] <= 0.5 ? 'Slow' : 
+                 replaySpeed[0] <= 1 ? 'Normal' : 
+                 replaySpeed[0] <= 2 ? 'Fast' : 'Very Fast'}
+              </div>
+            </div>
             <Button size="sm" variant="outline">
               <SkipBack className="w-4 h-4" />
             </Button>
