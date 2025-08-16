@@ -6,14 +6,20 @@ import { Link } from "wouter";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 via-blue-900 to-slate-900 relative overflow-hidden">
-      {/* Additional gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 via-transparent to-blue-600/10"></div>
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl"></div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Complex gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-purple-900 via-blue-900 to-indigo-900"></div>
+      <div className="absolute inset-0 bg-gradient-to-tr from-pink-900/30 via-transparent to-cyan-900/30"></div>
+      <div className="absolute inset-0 bg-gradient-to-bl from-transparent via-violet-800/20 to-blue-800/30"></div>
+      
+      {/* Floating gradient orbs */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-violet-500/30 via-purple-500/20 to-pink-500/30 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-0 right-1/3 w-[600px] h-[600px] bg-gradient-to-tl from-blue-500/30 via-cyan-500/20 to-indigo-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-purple-500/25 via-pink-500/15 to-violet-500/25 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
+      
       <div className="relative z-10">
       {/* Header */}
-      <header className="border-b border-white/10 backdrop-blur-sm bg-black/20">
+      <header className="border-b border-white/10 backdrop-blur-md bg-black/30">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -46,12 +52,12 @@ export default function LandingPage() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
-              <Badge className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 text-purple-400 border-purple-500/30">
+              <Badge className="bg-gradient-to-r from-violet-600/20 via-purple-600/20 to-pink-600/20 text-violet-400 border-violet-500/30">
                 AI-Powered Backtesting Engine
               </Badge>
               <h1 className="text-5xl font-bold text-white leading-tight">
                 AI copilot that helps you{" "}
-                <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-violet-400 via-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
                   backtest smarter
                 </span>
               </h1>
@@ -63,12 +69,12 @@ export default function LandingPage() {
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/backtesting">
-                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 group">
+                <Button size="lg" className="bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600 hover:from-violet-700 hover:via-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/25 group">
                   Start Backtesting
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-gradient-to-r hover:from-white/10 hover:to-blue-500/10 group">
+              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-gradient-to-r hover:from-violet-500/10 hover:to-pink-500/10 hover:border-purple-400/40 group">
                 <Play className="mr-2 w-4 h-4" />
                 Watch Demo
               </Button>
@@ -89,13 +95,13 @@ export default function LandingPage() {
           </div>
 
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-cyan-600/20 rounded-2xl blur-3xl"></div>
-            <Card className="relative bg-gradient-to-br from-black/40 to-blue-900/20 border-white/10 backdrop-blur-sm">
+            <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 via-purple-600/20 via-pink-600/20 to-cyan-600/20 rounded-2xl blur-3xl"></div>
+            <Card className="relative bg-gradient-to-br from-black/40 via-violet-900/20 to-pink-900/20 border-white/10 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-400">Backtest Results</span>
-                    <Badge className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 text-green-400 border-green-500/30">
+                    <Badge className="bg-gradient-to-r from-emerald-600/20 to-green-600/20 text-emerald-400 border-emerald-500/30">
                       +12.4%
                     </Badge>
                   </div>
@@ -106,7 +112,7 @@ export default function LandingPage() {
                       <span className="text-green-400 font-mono">+$4,250</span>
                     </div>
                     <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full" style={{ width: '78%' }}></div>
+                      <div className="bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 h-2 rounded-full" style={{ width: '78%' }}></div>
                     </div>
                     
                     <div className="grid grid-cols-3 gap-4 pt-4">
@@ -135,7 +141,7 @@ export default function LandingPage() {
       <section id="features" className="container mx-auto px-6 py-20">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-white mb-4">
-            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-violet-400 via-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
               Build & Test
             </span>{" "}
             Trading Strategies
@@ -184,11 +190,11 @@ export default function LandingPage() {
               features: ["Risk metrics", "Drawdown analysis", "Position sizing"]
             }
           ].map((feature, index) => (
-            <Card key={index} className="bg-gradient-to-br from-black/40 to-purple-900/10 border-white/10 backdrop-blur-sm hover:border-purple-500/30 transition-all duration-300 hover:scale-105">
+            <Card key={index} className="bg-gradient-to-br from-black/40 via-violet-900/10 to-pink-900/10 border-white/10 backdrop-blur-sm hover:border-violet-400/40 hover:shadow-lg hover:shadow-violet-500/20 transition-all duration-300 hover:scale-105">
               <CardContent className="p-6">
                 <div className="space-y-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-600/20 to-blue-600/20 rounded-lg flex items-center justify-center">
-                    <feature.icon className="w-6 h-6 text-purple-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-violet-600/20 via-purple-600/20 to-pink-600/20 rounded-lg flex items-center justify-center">
+                    <feature.icon className="w-6 h-6 text-violet-400" />
                   </div>
                   <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
                   <p className="text-gray-300">{feature.description}</p>
@@ -267,10 +273,10 @@ export default function LandingPage() {
               popular: false
             }
           ].map((plan, index) => (
-            <Card key={index} className={`relative bg-gradient-to-br from-black/40 to-slate-900/40 border-white/10 backdrop-blur-sm ${plan.popular ? 'border-purple-500/50 scale-105 bg-gradient-to-br from-purple-900/20 to-blue-900/20' : ''}`}>
+            <Card key={index} className={`relative bg-gradient-to-br from-black/40 via-slate-900/20 to-violet-900/10 border-white/10 backdrop-blur-sm ${plan.popular ? 'border-violet-500/50 scale-105 bg-gradient-to-br from-violet-900/20 via-purple-900/20 to-pink-900/20 shadow-lg shadow-violet-500/20' : ''}`}>
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-none">Most Popular</Badge>
+                  <Badge className="bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600 text-white border-none shadow-lg">Most Popular</Badge>
                 </div>
               )}
               <CardContent className="p-8">
@@ -294,7 +300,7 @@ export default function LandingPage() {
                     ))}
                   </ul>
                   
-                  <Button className={`w-full ${plan.popular ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700' : 'bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500'}`}>
+                  <Button className={`w-full ${plan.popular ? 'bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600 hover:from-violet-700 hover:via-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/25' : 'bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500'}`}>
                     Get Started
                   </Button>
                 </div>
@@ -309,7 +315,7 @@ export default function LandingPage() {
         <div className="text-center space-y-8">
           <h2 className="text-4xl font-bold text-white">
             Your AI-powered partner for{" "}
-            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-violet-400 via-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
               smarter backtesting
             </span>
           </h2>
@@ -319,12 +325,12 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/backtesting">
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 group">
+              <Button size="lg" className="bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600 hover:from-violet-700 hover:via-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/25 group">
                 Start Backtesting Now
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-gradient-to-r hover:from-white/10 hover:to-purple-500/10">
+            <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-gradient-to-r hover:from-violet-500/10 hover:to-pink-500/10 hover:border-purple-400/40">
               Schedule Demo
             </Button>
           </div>
