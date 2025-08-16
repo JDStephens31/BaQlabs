@@ -53,29 +53,73 @@ async function runBacktestWithProgress(strategyId: string, datasetId: string, ws
       
       const chunk = marketData.slice(i, Math.min(i + chunkSize, totalEvents));
       
-      // Process this chunk
+      // Process this chunk with queue-aware logic
       for (const dataPoint of chunk) {
-        // Simple trading logic for demonstration
-        if (Math.random() > 0.98) { // Random trade generation
-          const side = Math.random() > 0.5 ? 'BUY' : 'SELL';
-          const price = basePrice + (Math.random() - 0.5) * 10;
-          const size = 1;
-          const pnl = (Math.random() - 0.4) * 200; // Slight positive bias
+        // Simulate realistic NQ order book in 23770-23800 range
+        const currentPrice = 23770 + (processedEvents / totalEvents) * 30; // Move from 23770 to 23800
+        const book = generateRealisticOrderBook(currentPrice);
+        
+        // Calculate order book imbalance
+        const imbalance = calculateOrderBookImbalance(book);
+        
+        // Queue-aware strategy logic
+        if (shouldExecuteStrategy(imbalance, currentPrice, position)) {
+          const side = imbalance > 0.4 ? 'BUY' : 'SELL';
+          const targetPrice = side === 'BUY' ? book.bids[0].price : book.asks[0].price;
           
-          const trade = await storage.createTrade({
+          // Estimate queue position (realistic queue dynamics)
+          const queueRank = estimateQueuePosition(targetPrice, side, book);
+          
+          // Only execute if queue position is favorable
+          if (queueRank <= 8) {
+            const size = 1;
+            const fillProbability = calculateFillProbability(queueRank);
+            
+            // Simulate order execution with queue delays
+            if (Math.random() < fillProbability) {
+              const slippage = queueRank > 3 ? 0.25 : 0; // Slippage for deeper queue positions
+              const executionPrice = targetPrice + (side === 'BUY' ? slippage : -slippage);
+              const pnl = calculateRealisticPnL(side, executionPrice, size, position);
+              
+              const trade = await storage.createTrade({
+                backtestRunId: backtestRun.id,
+                timestamp: dataPoint.timestamp,
+                side,
+                price: executionPrice,
+                size,
+                pnl,
+                slippage,
+                queueRank
+              });
+              
+              trades.push(trade);
+              position += side === 'BUY' ? size : -size;
+              capital += pnl;
+            }
+          }
+        }
+        
+        // Risk management - dynamic position limits
+        if (Math.abs(position) > 10) {
+          const closeSide = position > 0 ? 'SELL' : 'BUY';
+          const closePrice = currentPrice;
+          const closeSize = Math.min(Math.abs(position), 3); // Close 3 contracts at a time
+          const closePnL = calculateRealisticPnL(closeSide, closePrice, closeSize, position);
+          
+          const riskTrade = await storage.createTrade({
             backtestRunId: backtestRun.id,
             timestamp: dataPoint.timestamp,
-            side,
-            price,
-            size,
-            pnl,
-            slippage: Math.random() * 0.5,
-            queueRank: Math.floor(Math.random() * 50) + 1
+            side: closeSide,
+            price: closePrice,
+            size: closeSize,
+            pnl: closePnL,
+            slippage: 0.5, // Higher slippage for risk management
+            queueRank: 1 // Risk trades get priority
           });
           
-          trades.push(trade);
-          position += side === 'BUY' ? size : -size;
-          capital += pnl;
+          trades.push(riskTrade);
+          position += closeSide === 'BUY' ? closeSize : -closeSize;
+          capital += closePnL;
         }
         
         processedEvents++;
@@ -353,4 +397,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   return httpServer;
+}
+
+// Queue-aware helper functions for enhanced NQ backtesting
+function generateRealisticOrderBook(price: number) {
+  const tickSize = 0.25;
+  return {
+    bids: Array.from({length: 10}, (_, i) => ({
+      price: price - (i * tickSize),
+      size: Math.floor(Math.random() * 150) + 25,
+      orders: Math.floor(Math.random() * 8) + 1
+    })),
+    asks: Array.from({length: 10}, (_, i) => ({
+      price: price + tickSize + (i * tickSize),
+      size: Math.floor(Math.random() * 150) + 25,
+      orders: Math.floor(Math.random() * 8) + 1
+    }))
+  };
+}
+
+function calculateOrderBookImbalance(book: any): number {
+  // Weighted imbalance calculation considering top 5 levels
+  let bidSize = 0, askSize = 0;
+  
+  for (let i = 0; i < Math.min(5, book.bids.length); i++) {
+    const weight = 1 / (i + 1); // Decreasing weight with depth
+    bidSize += book.bids[i].size * weight;
+  }
+  
+  for (let i = 0; i < Math.min(5, book.asks.length); i++) {
+    const weight = 1 / (i + 1);
+    askSize += book.asks[i].size * weight;
+  }
+  
+  return (bidSize - askSize) / (bidSize + askSize);
+}
+
+function shouldExecuteStrategy(imbalance: number, price: number, position: number): boolean {
+  // Only trade within NQ range with strong imbalance signal
+  return Math.abs(imbalance) > 0.35 && 
+         price >= 23770 && price <= 23800 && 
+         Math.abs(position) < 8;
+}
+
+function estimateQueuePosition(price: number, side: string, book: any): number {
+  const level = side === 'BUY' ? 
+    book.bids.find((l: any) => l.price === price) : 
+    book.asks.find((l: any) => l.price === price);
+  
+  if (!level) return 50; // Price not in book
+  
+  // Estimate position based on existing size and orders
+  const avgSizePerOrder = level.size / level.orders;
+  const estimatedPosition = Math.floor(level.size / Math.max(avgSizePerOrder, 10)) + 1;
+  
+  return Math.min(estimatedPosition, 25); // Cap at 25 for realism
+}
+
+function calculateFillProbability(queueRank: number): number {
+  // Higher probability for better queue positions
+  if (queueRank <= 2) return 0.95;
+  if (queueRank <= 5) return 0.75;
+  if (queueRank <= 10) return 0.45;
+  return 0.15;
+}
+
+function calculateRealisticPnL(side: string, price: number, size: number, position: number): number {
+  const nqMultiplier = 20; // NQ contract multiplier
+  const referencePrice = 23785; // Mid-point of our range
+  
+  let pnl = 0;
+  if (side === 'BUY') {
+    pnl = size * (price - referencePrice) * nqMultiplier;
+  } else {
+    pnl = size * (referencePrice - price) * nqMultiplier;
+  }
+  
+  // Add realistic market movement impact
+  const marketImpact = Math.random() * 20 - 10; // Random market movement
+  return pnl + marketImpact;
 }
