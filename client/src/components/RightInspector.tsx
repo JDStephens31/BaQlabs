@@ -24,7 +24,6 @@ export default function RightInspector() {
       <div className="p-3 border-b border-border">
         <h3 className="font-semibold text-sm">Inspector</h3>
       </div>
-      
       <ScrollArea className="h-full">
         <div className="p-4 space-y-6">
           {/* Current Context */}
@@ -64,7 +63,7 @@ export default function RightInspector() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Price:</span>
-                <span className="font-mono">20004.75</span>
+                <span className="font-mono">23770.25</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Size:</span>
