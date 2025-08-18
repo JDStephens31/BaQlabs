@@ -53,7 +53,7 @@ export default function LandingPage() {
         {/* Feature Block 4 - Teal/Green */}
         <div className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 rounded-full px-8 py-6 border-2 border-black/20 transform rotate-2 hover:rotate-0 transition-transform duration-300">
           <h3 className="text-white font-bold text-lg mb-1 text-center">ML model training</h3>
-          <p className="text-teal-50 text-sm text-center">Advanced position controls</p>
+          <p className="text-teal-50 text-sm text-center">XGboost</p>
         </div>
       </div>
       {/* Waitlist Form */}
