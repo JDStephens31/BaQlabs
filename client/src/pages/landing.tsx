@@ -31,7 +31,7 @@ export default function LandingPage() {
         </div>
       </div>
       {/* Flowing Gradient Shapes */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="z-10 relative mb-16">
         <div className="relative w-80 h-96">
           {/* Top shape - Light gray/blue */}
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-72 h-20 bg-gradient-to-r from-gray-300 via-blue-200 to-gray-300 rounded-full border-2 border-black/20" 
@@ -50,8 +50,9 @@ export default function LandingPage() {
                style={{ transform: 'translateX(-50%) rotate(6deg)' }}></div>
         </div>
       </div>
+
       {/* Waitlist Form */}
-      <div className="z-10 relative mt-16">
+      <div className="z-10 relative">
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4">
           <div className="flex flex-col sm:flex-row gap-3 items-center">
             <Input
@@ -69,7 +70,7 @@ export default function LandingPage() {
               Join Waitlist
             </Button>
           </div>
-          <p className="text-gray-600 text-sm text-center max-w-md">Be the first to know when BAQLABS launches. No spam, just updates.</p>
+          <p className="text-gray-600 text-sm text-center max-w-md">Be the first to know when BAO LABS launches. No spam, just updates.</p>
         </form>
       </div>
     </div>
