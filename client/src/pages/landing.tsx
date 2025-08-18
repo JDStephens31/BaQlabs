@@ -46,13 +46,13 @@ export default function LandingPage() {
         
         {/* Feature Block 3 - Purple/Pink */}
         <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 rounded-full px-8 py-6 border-2 border-black/20 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
-          <h3 className="text-white font-bold text-lg mb-1 text-center">Queue-Aware Execution</h3>
+          <h3 className="text-white font-bold text-lg mb-1 text-center">Queue-Modeling </h3>
           <p className="text-purple-50 text-sm text-center">Realistic order book simulation</p>
         </div>
         
         {/* Feature Block 4 - Teal/Green */}
         <div className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 rounded-full px-8 py-6 border-2 border-black/20 transform rotate-2 hover:rotate-0 transition-transform duration-300">
-          <h3 className="text-white font-bold text-lg mb-1 text-center">Risk Management</h3>
+          <h3 className="text-white font-bold text-lg mb-1 text-center">ML model training</h3>
           <p className="text-teal-50 text-sm text-center">Advanced position controls</p>
         </div>
       </div>
