@@ -56,7 +56,6 @@ export default function LandingPage() {
           <p className="text-teal-50 text-sm text-center">Advanced position controls</p>
         </div>
       </div>
-
       {/* Waitlist Form */}
       <div className="z-10 relative">
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4">
@@ -76,7 +75,7 @@ export default function LandingPage() {
               Join Waitlist
             </Button>
           </div>
-          <p className="text-gray-600 text-sm text-center max-w-md">Be the first to know when BAQ LABS launches. No spam, just updates.</p>
+          <p className="text-gray-600 text-sm text-center max-w-md">Be the first to know when BAQLABS launches. No spam, just updates.</p>
         </form>
       </div>
     </div>
