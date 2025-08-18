@@ -17,6 +17,7 @@ export default function StrategyTab() {
   const { toast } = useToast();
   const [strategyCode, setStrategyCode] = useState("");
   const [strategyName, setStrategyName] = useState("Queue Aware NQ Strategy");
+  const [selectedStrategyId, setSelectedStrategyId] = useState("maker-queue-aware");
   const [isCompiling, setIsCompiling] = useState(false);
   const [compilationStatus, setCompilationStatus] = useState<'valid' | 'invalid' | 'compiling' | null>(null);
   const [compilationErrors, setCompilationErrors] = useState<string[]>([]);
@@ -35,12 +36,27 @@ export default function StrategyTab() {
     enableQueueTracking: true
   });
 
-  // Initialize with enhanced strategy
+  // Initialize with enhanced strategy and listen for strategy selection
   useEffect(() => {
     if (!strategyCode) {
       setStrategyCode(enhancedStrategy);
     }
-  }, []);
+
+    const handleStrategySelected = (event: any) => {
+      const { strategy, strategyId } = event.detail;
+      setSelectedStrategyId(strategyId);
+      setStrategyName(strategy.name);
+      if (strategy.code) {
+        setStrategyCode(strategy.code);
+      }
+      if (strategy.parameters) {
+        setParameters(strategy.parameters);
+      }
+    };
+
+    window.addEventListener('strategySelected', handleStrategySelected);
+    return () => window.removeEventListener('strategySelected', handleStrategySelected);
+  }, [strategyCode]);
 
   const validateStrategy = async () => {
     setIsCompiling(true);
@@ -71,6 +87,13 @@ export default function StrategyTab() {
       } else {
         setCompilationErrors([]);
         setCompilationStatus('valid');
+        
+        // Dispatch compilation status event for inspector
+        const statusEvent = new CustomEvent('compilationStatusChanged', {
+          detail: { status: 'valid', timestamp: new Date().toISOString() }
+        });
+        window.dispatchEvent(statusEvent);
+        
         toast({
           title: "Validation Successful",
           description: "Strategy code is valid and ready for backtesting"
@@ -79,6 +102,13 @@ export default function StrategyTab() {
     } catch (error: any) {
       setCompilationErrors([error.message || 'Unknown syntax error']);
       setCompilationStatus('invalid');
+      
+      // Dispatch compilation status event for inspector
+      const statusEvent = new CustomEvent('compilationStatusChanged', {
+        detail: { status: 'invalid', timestamp: new Date().toISOString() }
+      });
+      window.dispatchEvent(statusEvent);
+      
       toast({
         title: "Syntax Error",
         description: error.message || 'Unknown syntax error',
@@ -91,17 +121,21 @@ export default function StrategyTab() {
 
   const saveStrategy = async () => {
     try {
-      const response = await fetch('/api/strategies/maker-queue-aware', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: strategyName,
-          code: strategyCode || enhancedStrategy,
-          parameters
-        })
+      const response = await apiRequest(`/api/strategies/${selectedStrategyId}`, 'PUT', {
+        name: strategyName,
+        code: strategyCode || enhancedStrategy,
+        parameters
       });
       
-      setLastSaved(new Date());
+      const newSaveTime = new Date();
+      setLastSaved(newSaveTime);
+      
+      // Dispatch save event for inspector
+      const saveEvent = new CustomEvent('strategySaved', {
+        detail: { timestamp: newSaveTime.toISOString() }
+      });
+      window.dispatchEvent(saveEvent);
+      
       toast({
         title: "Strategy Saved",
         description: "Strategy has been successfully saved"

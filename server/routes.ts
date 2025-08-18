@@ -233,6 +233,82 @@ function generateNQMarketData() {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
+  
+  // Strategy management endpoints
+  app.get('/api/strategies', async (req, res) => {
+    try {
+      const strategies = await storage.getAllStrategies();
+      res.json(strategies);
+    } catch (error) {
+      console.error('Error fetching strategies:', error);
+      res.status(500).json({ error: 'Failed to fetch strategies' });
+    }
+  });
+
+  app.get('/api/strategies/:id', async (req, res) => {
+    try {
+      const strategy = await storage.getStrategy(req.params.id);
+      if (!strategy) {
+        return res.status(404).json({ error: 'Strategy not found' });
+      }
+      res.json(strategy);
+    } catch (error) {
+      console.error('Error fetching strategy:', error);
+      res.status(500).json({ error: 'Failed to fetch strategy' });
+    }
+  });
+
+  app.post('/api/strategies', async (req, res) => {
+    try {
+      const validation = insertStrategySchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ 
+          error: 'Invalid strategy data',
+          details: validation.error.issues
+        });
+      }
+      
+      const strategy = await storage.createStrategy(validation.data);
+      res.status(201).json(strategy);
+    } catch (error) {
+      console.error('Error creating strategy:', error);
+      res.status(500).json({ error: 'Failed to create strategy' });
+    }
+  });
+
+  app.put('/api/strategies/:id', async (req, res) => {
+    try {
+      const validation = insertStrategySchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ 
+          error: 'Invalid strategy data',
+          details: validation.error.issues
+        });
+      }
+      
+      const strategy = await storage.updateStrategy(req.params.id, validation.data);
+      if (!strategy) {
+        return res.status(404).json({ error: 'Strategy not found' });
+      }
+      res.json(strategy);
+    } catch (error) {
+      console.error('Error updating strategy:', error);
+      res.status(500).json({ error: 'Failed to update strategy' });
+    }
+  });
+
+  app.delete('/api/strategies/:id', async (req, res) => {
+    try {
+      const deleted = await storage.deleteStrategy(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: 'Strategy not found' });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error('Error deleting strategy:', error);
+      res.status(500).json({ error: 'Failed to delete strategy' });
+    }
+  });
 
   // WebSocket server for real-time updates
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });

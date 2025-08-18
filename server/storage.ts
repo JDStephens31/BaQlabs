@@ -7,6 +7,7 @@ export interface IStorage {
   getAllStrategies(): Promise<Strategy[]>;
   createStrategy(strategy: InsertStrategy): Promise<Strategy>;
   updateStrategy(id: string, strategy: Partial<InsertStrategy>): Promise<Strategy | undefined>;
+  deleteStrategy(id: string): Promise<boolean>;
   
   // Datasets
   getDataset(id: string): Promise<Dataset | undefined>;
@@ -141,6 +142,10 @@ function onMarketData(book, trades) {
     const updated = { ...existing, ...updateData, updatedAt: new Date() };
     this.strategies.set(id, updated);
     return updated;
+  }
+
+  async deleteStrategy(id: string): Promise<boolean> {
+    return this.strategies.delete(id);
   }
 
   // Dataset methods

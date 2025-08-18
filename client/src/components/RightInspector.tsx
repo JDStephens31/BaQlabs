@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 export default function RightInspector() {
   const [selectedStrategy, setSelectedStrategy] = useState("Maker Queue Aware");
   const [selectedDataset, setSelectedDataset] = useState("NQ 2025-08 (5 days)");
+  const [compilationStatus, setCompilationStatus] = useState<'valid' | 'invalid' | 'compiling' | null>('valid');
+  const [lastSaved, setLastSaved] = useState<Date>(new Date());
+  const [strategyParameters, setStrategyParameters] = useState<any>({});
 
   useEffect(() => {
     const handleItemSelected = (event: any) => {
@@ -16,8 +20,35 @@ export default function RightInspector() {
       }
     };
 
+    const handleStrategySelected = (event: any) => {
+      const { strategy } = event.detail;
+      setSelectedStrategy(strategy.name);
+      setStrategyParameters(strategy.parameters || {});
+    };
+
+    const handleCompilationStatus = (event: any) => {
+      const { status, timestamp } = event.detail;
+      setCompilationStatus(status);
+      if (status === 'valid') {
+        setLastSaved(new Date(timestamp));
+      }
+    };
+
+    const handleStrategySaved = (event: any) => {
+      setLastSaved(new Date());
+    };
+
     window.addEventListener('itemSelected', handleItemSelected);
-    return () => window.removeEventListener('itemSelected', handleItemSelected);
+    window.addEventListener('strategySelected', handleStrategySelected);
+    window.addEventListener('compilationStatusChanged', handleCompilationStatus);
+    window.addEventListener('strategySaved', handleStrategySaved);
+    
+    return () => {
+      window.removeEventListener('itemSelected', handleItemSelected);
+      window.removeEventListener('strategySelected', handleStrategySelected);
+      window.removeEventListener('compilationStatusChanged', handleCompilationStatus);
+      window.removeEventListener('strategySaved', handleStrategySaved);
+    };
   }, []);
   return (
     <div className="w-80 bg-card border-l border-border">
@@ -48,7 +79,19 @@ export default function RightInspector() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Compile Status:</span>
-                <span className="text-green-600 font-mono">✓ VALID</span>
+                <Badge variant={compilationStatus === 'valid' ? 'default' : compilationStatus === 'invalid' ? 'destructive' : 'secondary'}>
+                  {compilationStatus === 'valid' ? '✓ VALID' : 
+                   compilationStatus === 'invalid' ? '✗ INVALID' : 
+                   compilationStatus === 'compiling' ? '⏳ COMPILING' : 'NOT COMPILED'}
+                </Badge>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Last Saved:</span>
+                <span className="font-mono text-xs">{lastSaved.toLocaleTimeString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Parameters:</span>
+                <span className="font-mono text-xs">{Object.keys(strategyParameters).length} vars</span>
               </div>
             </div>
           </div>
