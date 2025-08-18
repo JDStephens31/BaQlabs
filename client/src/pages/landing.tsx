@@ -20,7 +20,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-200 flex flex-col items-center px-6 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center px-6 relative overflow-hidden bg-[#f0f0f0]">
       {/* Stacked Blocks */}
       <div className="z-10 relative mb-16 space-y-6 max-w-md mt-20">
         {/* Logo Block */}
