@@ -31,24 +31,45 @@ export default function LandingPage() {
           />
         </div>
       </div>
-      {/* Flowing Gradient Shapes */}
-      <div className="z-10 relative mb-16">
-        <div className="relative w-80 h-96">
-          {/* Top shape - Light gray/blue */}
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-72 h-20 bg-gradient-to-r from-gray-300 via-blue-200 to-gray-300 rounded-full border-2 border-black/20" 
-               style={{ transform: 'translateX(-50%) rotate(-5deg)' }}></div>
+      {/* Feature Blocks */}
+      <div className="z-10 relative mb-16 space-y-8 max-w-4xl">
+        {/* First Row */}
+        <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
+          <div className="bg-gradient-to-r from-blue-400 via-blue-500 to-cyan-400 rounded-3xl border-2 border-black/20 px-8 py-6 transform rotate-2 hover:rotate-0 transition-transform duration-300 max-w-sm">
+            <h3 className="text-white font-bold text-lg mb-2">Real-Time Market Data</h3>
+            <p className="text-blue-50 text-sm">Access live market feeds and historical data for accurate backtesting with real market conditions.</p>
+          </div>
           
-          {/* Second shape - Blue */}
-          <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-80 h-24 bg-gradient-to-r from-blue-400 via-blue-500 to-cyan-400 rounded-full border-2 border-black/20"
-               style={{ transform: 'translateX(-50%) rotate(8deg)' }}></div>
+          <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 rounded-3xl border-2 border-black/20 px-8 py-6 transform -rotate-3 hover:rotate-0 transition-transform duration-300 max-w-sm">
+            <h3 className="text-white font-bold text-lg mb-2">Strategy Development</h3>
+            <p className="text-purple-50 text-sm">Build and test custom trading algorithms with our intuitive code editor and validation tools.</p>
+          </div>
+        </div>
+
+        {/* Second Row */}
+        <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
+          <div className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 rounded-3xl border-2 border-black/20 px-8 py-6 transform rotate-1 hover:rotate-0 transition-transform duration-300 max-w-sm">
+            <h3 className="text-white font-bold text-lg mb-2">Risk Management</h3>
+            <p className="text-teal-50 text-sm">Advanced position sizing and risk controls to protect your capital and optimize returns.</p>
+          </div>
           
-          {/* Third shape - Purple/Pink */}
-          <div className="absolute top-28 left-1/2 transform -translate-x-1/2 w-76 h-22 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 rounded-full border-2 border-black/20"
-               style={{ transform: 'translateX(-50%) rotate(-12deg)' }}></div>
+          <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 rounded-3xl border-2 border-black/20 px-8 py-6 transform -rotate-2 hover:rotate-0 transition-transform duration-300 max-w-sm">
+            <h3 className="text-white font-bold text-lg mb-2">Performance Analytics</h3>
+            <p className="text-orange-50 text-sm">Comprehensive metrics and visualizations to analyze strategy performance and optimize results.</p>
+          </div>
+        </div>
+
+        {/* Third Row */}
+        <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
+          <div className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 rounded-3xl border-2 border-black/20 px-8 py-6 transform rotate-3 hover:rotate-0 transition-transform duration-300 max-w-sm">
+            <h3 className="text-white font-bold text-lg mb-2">Queue-Aware Execution</h3>
+            <p className="text-indigo-50 text-sm">Realistic order book simulation with queue position tracking for accurate fill modeling.</p>
+          </div>
           
-          {/* Bottom shape - Teal/Green */}
-          <div className="absolute top-44 left-1/2 transform -translate-x-1/2 w-72 h-20 bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 rounded-full border-2 border-black/20"
-               style={{ transform: 'translateX(-50%) rotate(6deg)' }}></div>
+          <div className="bg-gradient-to-r from-rose-400 via-pink-400 to-red-400 rounded-3xl border-2 border-black/20 px-8 py-6 transform -rotate-1 hover:rotate-0 transition-transform duration-300 max-w-sm">
+            <h3 className="text-white font-bold text-lg mb-2">Multi-Asset Support</h3>
+            <p className="text-rose-50 text-sm">Test strategies across stocks, futures, options, and crypto with unified backtesting framework.</p>
+          </div>
         </div>
       </div>
 
@@ -71,7 +92,7 @@ export default function LandingPage() {
               Join Waitlist
             </Button>
           </div>
-          <p className="text-gray-600 text-sm text-center max-w-md">Be the first to know when BAO LABS launches. No spam, just updates.</p>
+          <p className="text-gray-600 text-sm text-center max-w-md">Be the first to know when BAQ LABS launches. No spam, just updates.</p>
         </form>
       </div>
     </div>
