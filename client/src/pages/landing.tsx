@@ -24,7 +24,7 @@ export default function LandingPage() {
       {/* Stacked Blocks */}
       <div className="z-10 relative mb-16 space-y-6 max-w-md mt-20">
         {/* Logo Block */}
-        <div className="bg-gradient-to-r from-white to-pink-200 rounded-full px-12 py-6 border-2 border-black/20 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+        <div className="bg-gradient-to-r from-white to-pink-100 rounded-full px-12 py-6 border-2 border-black/20 transform rotate-1 hover:rotate-0 transition-transform duration-300">
           <img 
             src={logoImage} 
             alt="BAQ LABS" 
