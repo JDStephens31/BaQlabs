@@ -35,7 +35,7 @@ export default function LandingPage() {
         {/* Feature Block 1 - Light Gray/Blue */}
         <div className="bg-gradient-to-r from-gray-300 via-blue-200 to-gray-300 rounded-full px-8 py-6 border-2 border-black/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300">
           <h3 className="text-gray-800 font-bold text-lg mb-1 text-center">Real-Time Market Data</h3>
-          <p className="text-gray-700 text-sm text-center">Live feeds & historical data</p>
+          <p className="text-gray-700 text-sm text-center">MBO data via CSV</p>
         </div>
         
         {/* Feature Block 2 - Blue */}
