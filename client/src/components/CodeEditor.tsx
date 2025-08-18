@@ -14,10 +14,12 @@ export default function CodeEditor({ value, onChange, language = "javascript", r
   // Debug logging
   console.log('CodeEditor rendered with value length:', value?.length || 0);
   console.log('Value preview:', value?.substring(0, 100) || 'No value');
+  console.log('CodeEditor container dimensions');
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
     console.log('Monaco editor mounted successfully');
+    console.log('Monaco mounted with value:', editor.getValue().substring(0, 100));
 
     // Configure custom theme for trading platform
     monaco.editor.defineTheme('trading-dark', {
@@ -106,9 +108,9 @@ export default function CodeEditor({ value, onChange, language = "javascript", r
   };
 
   return (
-    <div className="flex-1 relative">
+    <div className="w-full h-full">
       <Editor
-        height="100%"
+        height="600px"
         defaultLanguage={language}
         value={value}
         onChange={handleEditorChange}
@@ -183,9 +185,6 @@ export default function CodeEditor({ value, onChange, language = "javascript", r
         }
         beforeMount={(monaco) => {
           console.log('Monaco is about to mount');
-        }}
-        onMount={(editor, monaco) => {
-          console.log('Monaco mounted with value:', editor.getValue().substring(0, 100));
         }}
       />
     </div>

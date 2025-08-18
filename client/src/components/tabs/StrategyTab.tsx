@@ -349,10 +349,12 @@ function log(message) {
           </div>
         </div>
         
-        <CodeEditor 
-          value={strategyCode || enhancedStrategy} 
-          onChange={setStrategyCode}
-        />
+        <div className="flex-1 min-h-0">
+          <CodeEditor 
+            value={strategyCode || enhancedStrategy} 
+            onChange={setStrategyCode}
+          />
+        </div>
       </div>
 
       {/* Strategy Configuration */}
