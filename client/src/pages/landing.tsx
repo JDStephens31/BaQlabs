@@ -21,55 +21,39 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col items-center px-6 relative overflow-hidden">
-      {/* Logo */}
-      <div className="mt-20 mb-8 z-10 relative">
-        <div className="bg-white rounded-3xl px-8 py-6 shadow-sm">
+      {/* Stacked Blocks */}
+      <div className="z-10 relative mb-16 space-y-6 max-w-md mt-20">
+        {/* Logo Block */}
+        <div className="bg-white rounded-full px-12 py-6 border-2 border-black/20 transform rotate-1 hover:rotate-0 transition-transform duration-300">
           <img 
             src={logoImage} 
             alt="BAQ LABS" 
-            className="h-12 w-auto"
+            className="h-12 w-auto mx-auto"
           />
         </div>
-      </div>
-      {/* Feature Blocks */}
-      <div className="z-10 relative mb-16 space-y-8 max-w-4xl">
-        {/* First Row */}
-        <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-          <div className="bg-gradient-to-r from-blue-400 via-blue-500 to-cyan-400 rounded-3xl border-2 border-black/20 px-8 py-6 transform rotate-2 hover:rotate-0 transition-transform duration-300 max-w-sm">
-            <h3 className="text-white font-bold text-lg mb-2">Real-Time Market Data</h3>
-            <p className="text-blue-50 text-sm">Access live market feeds and historical data for accurate backtesting with real market conditions.</p>
-          </div>
-          
-          <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 rounded-3xl border-2 border-black/20 px-8 py-6 transform -rotate-3 hover:rotate-0 transition-transform duration-300 max-w-sm">
-            <h3 className="text-white font-bold text-lg mb-2">Strategy Development</h3>
-            <p className="text-purple-50 text-sm">Build and test custom trading algorithms with our intuitive code editor and validation tools.</p>
-          </div>
+        
+        {/* Feature Block 1 - Light Gray/Blue */}
+        <div className="bg-gradient-to-r from-gray-300 via-blue-200 to-gray-300 rounded-full px-8 py-6 border-2 border-black/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300">
+          <h3 className="text-gray-800 font-bold text-lg mb-1 text-center">Real-Time Market Data</h3>
+          <p className="text-gray-700 text-sm text-center">Live feeds & historical data</p>
         </div>
-
-        {/* Second Row */}
-        <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-          <div className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 rounded-3xl border-2 border-black/20 px-8 py-6 transform rotate-1 hover:rotate-0 transition-transform duration-300 max-w-sm">
-            <h3 className="text-white font-bold text-lg mb-2">Risk Management</h3>
-            <p className="text-teal-50 text-sm">Advanced position sizing and risk controls to protect your capital and optimize returns.</p>
-          </div>
-          
-          <div className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 rounded-3xl border-2 border-black/20 px-8 py-6 transform -rotate-2 hover:rotate-0 transition-transform duration-300 max-w-sm">
-            <h3 className="text-white font-bold text-lg mb-2">Performance Analytics</h3>
-            <p className="text-orange-50 text-sm">Comprehensive metrics and visualizations to analyze strategy performance and optimize results.</p>
-          </div>
+        
+        {/* Feature Block 2 - Blue */}
+        <div className="bg-gradient-to-r from-blue-400 via-blue-500 to-cyan-400 rounded-full px-8 py-6 border-2 border-black/20 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+          <h3 className="text-white font-bold text-lg mb-1 text-center">Strategy Development</h3>
+          <p className="text-blue-50 text-sm text-center">Custom algorithm builder</p>
         </div>
-
-        {/* Third Row */}
-        <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-          <div className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 rounded-3xl border-2 border-black/20 px-8 py-6 transform rotate-3 hover:rotate-0 transition-transform duration-300 max-w-sm">
-            <h3 className="text-white font-bold text-lg mb-2">Queue-Aware Execution</h3>
-            <p className="text-indigo-50 text-sm">Realistic order book simulation with queue position tracking for accurate fill modeling.</p>
-          </div>
-          
-          <div className="bg-gradient-to-r from-rose-400 via-pink-400 to-red-400 rounded-3xl border-2 border-black/20 px-8 py-6 transform -rotate-1 hover:rotate-0 transition-transform duration-300 max-w-sm">
-            <h3 className="text-white font-bold text-lg mb-2">Multi-Asset Support</h3>
-            <p className="text-rose-50 text-sm">Test strategies across stocks, futures, options, and crypto with unified backtesting framework.</p>
-          </div>
+        
+        {/* Feature Block 3 - Purple/Pink */}
+        <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 rounded-full px-8 py-6 border-2 border-black/20 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+          <h3 className="text-white font-bold text-lg mb-1 text-center">Queue-Aware Execution</h3>
+          <p className="text-purple-50 text-sm text-center">Realistic order book simulation</p>
+        </div>
+        
+        {/* Feature Block 4 - Teal/Green */}
+        <div className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 rounded-full px-8 py-6 border-2 border-black/20 transform rotate-2 hover:rotate-0 transition-transform duration-300">
+          <h3 className="text-white font-bold text-lg mb-1 text-center">Risk Management</h3>
+          <p className="text-teal-50 text-sm text-center">Advanced position controls</p>
         </div>
       </div>
 
