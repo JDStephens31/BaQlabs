@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import Editor from "@monaco-editor/react";
 
 interface CodeEditorProps {
   value: string;
@@ -8,103 +9,173 @@ interface CodeEditorProps {
 }
 
 export default function CodeEditor({ value, onChange, language = "javascript", readOnly = false }: CodeEditorProps) {
-  const editorRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
+  const editorRef = useRef<any>(null);
 
-  useEffect(() => {
-    // Enhanced syntax highlighting for JavaScript
-    if (editorRef.current) {
-      const highlighted = value
-        .replace(/(function|const|let|var|if|else|return|for|while|try|catch|async|await|class|extends|import|export|default)/g, '<span class="text-blue-400 font-semibold">$1</span>')
-        .replace(/(\/\/.*$)/gm, '<span class="text-green-500 italic">$1</span>')
-        .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="text-green-500 italic">$1</span>')
-        .replace(/(".*?"|'.*?'|`.*?`)/g, '<span class="text-yellow-400">$1</span>')
-        .replace(/(\d+\.?\d*)/g, '<span class="text-purple-400">$1</span>')
-        .replace(/(true|false|null|undefined)/g, '<span class="text-orange-400">$1</span>');
-      
-      editorRef.current.innerHTML = highlighted;
-    }
-  }, [value]);
+  const handleEditorDidMount = (editor: any, monaco: any) => {
+    editorRef.current = editor;
 
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    onChange?.(newValue);
+    // Configure custom theme for trading platform
+    monaco.editor.defineTheme('trading-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
+        { token: 'keyword', foreground: '569CD6', fontStyle: 'bold' },
+        { token: 'string', foreground: 'CE9178' },
+        { token: 'number', foreground: 'B5CEA8' },
+        { token: 'regexp', foreground: 'D16969' },
+        { token: 'type', foreground: '4EC9B0' },
+        { token: 'class', foreground: '4EC9B0' },
+        { token: 'function', foreground: 'DCDCAA' },
+        { token: 'variable', foreground: '9CDCFE' },
+        { token: 'constant', foreground: '4FC1FF' },
+      ],
+      colors: {
+        'editor.background': '#0C0A09',
+        'editor.foreground': '#E5E7EB',
+        'editorLineNumber.foreground': '#6B7280',
+        'editorLineNumber.activeForeground': '#E5E7EB',
+        'editor.selectionBackground': '#264F78',
+        'editor.selectionHighlightBackground': '#ADD6FF26',
+        'editorCursor.foreground': '#FFFFFF',
+        'editor.findMatchBackground': '#515C6A',
+        'editor.findMatchHighlightBackground': '#EA5C0055',
+        'editor.wordHighlightBackground': '#575757B8',
+        'editor.wordHighlightStrongBackground': '#004972B8',
+        'editorIndentGuide.background': '#404040',
+        'editorIndentGuide.activeBackground': '#707070',
+      }
+    });
+
+    monaco.editor.setTheme('trading-dark');
+
+    // Add custom key bindings
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+      // Trigger save event
+      window.dispatchEvent(new CustomEvent('editorSave'));
+    });
+
+    // Add trading-specific code snippets
+    monaco.languages.registerCompletionItemProvider('javascript', {
+      provideCompletionItems: (model: any, position: any) => {
+        const suggestions = [
+          {
+            label: 'onMarketData',
+            kind: monaco.languages.CompletionItemKind.Function,
+            insertText: 'function onMarketData(book, trades, marketData) {\n  // Process market data\n  const bestBid = book.bids[0];\n  const bestAsk = book.asks[0];\n  const midPrice = (bestBid.price + bestAsk.price) / 2;\n  \n  $0\n}',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'Main market data handler function'
+          },
+          {
+            label: 'placeLimitOrder',
+            kind: monaco.languages.CompletionItemKind.Function,
+            insertText: 'placeLimitOrder(\'${1|BUY,SELL|}\', ${2:price}, ${3:size});',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'Place a limit order'
+          },
+          {
+            label: 'calculateImbalance',
+            kind: monaco.languages.CompletionItemKind.Function,
+            insertText: 'function calculateImbalance(book) {\n  let bidSize = 0, askSize = 0;\n  const levels = Math.min(5, book.bids.length, book.asks.length);\n  \n  for (let i = 0; i < levels; i++) {\n    bidSize += book.bids[i].size;\n    askSize += book.asks[i].size;\n  }\n  \n  return (bidSize - askSize) / (bidSize + askSize);\n}',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'Calculate order book imbalance'
+          },
+          {
+            label: 'riskManagement',
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText: '// Risk management\nif (Math.abs(position) > maxPosition) {\n  // Reduce position\n  const reduceSize = Math.min(2, Math.abs(position) - maxPosition);\n  if (position > 0) {\n    placeLimitOrder(\'SELL\', currentPrice - 0.5, reduceSize);\n  } else {\n    placeLimitOrder(\'BUY\', currentPrice + 0.5, reduceSize);\n  }\n}',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'Basic risk management template'
+          }
+        ];
+        return { suggestions };
+      }
+    });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const textarea = e.currentTarget;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const newValue = value.substring(0, start) + '  ' + value.substring(end);
-      onChange?.(newValue);
-      
-      // Set cursor position after the inserted spaces
-      setTimeout(() => {
-        textarea.selectionStart = textarea.selectionEnd = start + 2;
-      }, 0);
+  const handleEditorChange = (newValue: string | undefined) => {
+    if (newValue !== undefined && onChange) {
+      onChange(newValue);
     }
   };
 
   return (
     <div className="flex-1 relative">
-      {/* Syntax highlighted display */}
-      <div 
-        ref={editorRef}
-        className="absolute inset-0 p-4 font-mono text-sm leading-6 overflow-auto custom-scrollbar pl-14 pointer-events-none"
-        style={{ 
-          whiteSpace: 'pre-wrap',
-          wordWrap: 'break-word',
-          color: 'transparent'
-        }}
-      />
-      
-      {/* Editable textarea */}
-      <textarea
-        ref={textareaRef}
+      <Editor
+        height="100%"
+        defaultLanguage={language}
         value={value}
-        onChange={handleTextareaChange}
-        onKeyDown={handleKeyDown}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        className="absolute inset-0 p-4 font-mono text-sm leading-6 overflow-auto custom-scrollbar pl-14 bg-transparent text-transparent caret-white resize-none outline-none"
-        style={{ 
-          whiteSpace: 'pre-wrap',
-          wordWrap: 'break-word'
+        onChange={handleEditorChange}
+        onMount={handleEditorDidMount}
+        options={{
+          readOnly: readOnly,
+          fontSize: 14,
+          fontFamily: 'JetBrains Mono, Consolas, Monaco, monospace',
+          lineHeight: 24,
+          minimap: { enabled: false },
+          scrollBeyondLastLine: false,
+          automaticLayout: true,
+          padding: { top: 16, bottom: 16 },
+          lineNumbers: 'on',
+          glyphMargin: false,
+          folding: true,
+          lineDecorationsWidth: 0,
+          lineNumbersMinChars: 3,
+          renderLineHighlight: 'line',
+          selectionHighlight: false,
+          bracketPairColorization: { enabled: true },
+          suggest: {
+            showKeywords: true,
+            showSnippets: true,
+            showFunctions: true,
+            showConstructors: true,
+            showFields: true,
+            showVariables: true,
+            showClasses: true,
+            showStructs: true,
+            showInterfaces: true,
+            showModules: true,
+            showProperties: true,
+            showEvents: true,
+            showOperators: true,
+            showUnits: true,
+            showValues: true,
+            showConstants: true,
+            showEnums: true,
+            showEnumMembers: true,
+            showColors: true,
+            showFiles: true,
+            showReferences: true,
+            showFolders: true,
+            showTypeParameters: true,
+          },
+          quickSuggestions: {
+            other: true,
+            comments: false,
+            strings: false
+          },
+          wordWrap: 'on',
+          wrappingIndent: 'indent',
+          tabSize: 2,
+          insertSpaces: true,
+          detectIndentation: false,
+          smoothScrolling: true,
+          cursorBlinking: 'smooth',
+          renderWhitespace: 'boundary',
+          showFoldingControls: 'mouseover',
+          dragAndDrop: true,
+          links: true,
+          colorDecorators: true,
+          contextmenu: true,
+          mouseWheelZoom: true,
         }}
-        spellCheck={false}
-        readOnly={readOnly}
-        placeholder={readOnly ? "" : "// Start typing your strategy code here..."}
-      />
-      
-      {/* Overlay for text visibility */}
-      <div 
-        className="absolute inset-0 p-4 font-mono text-sm leading-6 overflow-auto custom-scrollbar pl-14 pointer-events-none"
-        style={{ 
-          whiteSpace: 'pre-wrap',
-          wordWrap: 'break-word',
-          color: isFocused ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.8)'
-        }}
-        dangerouslySetInnerHTML={{ __html: value
-          .replace(/(function|const|let|var|if|else|return|for|while|try|catch|async|await|class|extends|import|export|default)/g, '<span class="text-blue-400 font-semibold">$1</span>')
-          .replace(/(\/\/.*$)/gm, '<span class="text-green-500 italic">$1</span>')
-          .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="text-green-500 italic">$1</span>')
-          .replace(/(".*?"|'.*?'|`.*?`)/g, '<span class="text-yellow-400">$1</span>')
-          .replace(/(\d+\.?\d*)/g, '<span class="text-purple-400">$1</span>')
-          .replace(/(true|false|null|undefined)/g, '<span class="text-orange-400">$1</span>')
-        }}
-      />
-      
-      {/* Line numbers */}
-      <div className="absolute left-0 top-0 w-12 h-full bg-muted border-r border-border p-4 text-right font-mono text-xs text-muted-foreground">
-        {value.split('\n').map((_, index) => (
-          <div key={index} className="leading-6">
-            {index + 1}
+        loading={
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-current"></div>
+            <span className="ml-3">Loading editor...</span>
           </div>
-        ))}
-      </div>
+        }
+      />
     </div>
   );
 }
