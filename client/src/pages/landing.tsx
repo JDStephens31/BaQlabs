@@ -30,7 +30,6 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-
       {/* Flowing Gradient Shapes */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative w-80 h-96">
@@ -51,7 +50,6 @@ export default function LandingPage() {
                style={{ transform: 'translateX(-50%) rotate(6deg)' }}></div>
         </div>
       </div>
-
       {/* Waitlist Form */}
       <div className="z-10 relative mt-16">
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4">
@@ -71,9 +69,7 @@ export default function LandingPage() {
               Join Waitlist
             </Button>
           </div>
-          <p className="text-gray-600 text-sm text-center max-w-md">
-            Be the first to know when BAO LABS launches. No spam, just updates.
-          </p>
+          <p className="text-gray-600 text-sm text-center max-w-md">Be the first to know when BAQLABS launches. No spam, just updates.</p>
         </form>
       </div>
     </div>
