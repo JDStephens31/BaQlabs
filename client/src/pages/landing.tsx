@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 import logoImage from "@assets/baqtest labs_1755480352109.png";
 
 export default function LandingPage() {
@@ -56,6 +57,15 @@ export default function LandingPage() {
           <p className="text-teal-50 text-sm text-center">XGboost</p>
         </div>
       </div>
+      {/* Access App Button */}
+      <div className="z-10 relative mb-8">
+        <Link href="/backtesting">
+          <Button className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 px-12 py-4 rounded-lg font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+            Access App
+          </Button>
+        </Link>
+      </div>
+
       {/* Waitlist Form */}
       <div className="z-10 relative">
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4">
