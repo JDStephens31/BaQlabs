@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import logoImage from "@assets/baqtest labs_1755480352109.png";
 
 export default function LandingPage() {
   const [email, setEmail] = useState("");
@@ -22,12 +23,12 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gray-200 flex flex-col items-center px-6 relative overflow-hidden">
       {/* Logo */}
       <div className="mt-20 mb-8 z-10 relative">
-        <div className="bg-white rounded-3xl px-12 py-6 shadow-sm">
-          <div className="flex items-center space-x-1">
-            <span className="text-3xl font-bold text-black tracking-tight">BA</span>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-300 to-pink-400 border-2 border-pink-200"></div>
-            <span className="text-3xl font-bold text-black tracking-tight">LABS</span>
-          </div>
+        <div className="bg-white rounded-3xl px-8 py-6 shadow-sm">
+          <img 
+            src={logoImage} 
+            alt="BAQ LABS" 
+            className="h-12 w-auto"
+          />
         </div>
       </div>
       {/* Flowing Gradient Shapes */}
