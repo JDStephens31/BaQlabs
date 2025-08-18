@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Square, RotateCcw, Settings } from "lucide-react";
 import SettingsModal from "@/components/SettingsModal";
+import UserSettingsDropdown from "@/components/UserSettingsDropdown";
 import { useWebSocket } from "@/hooks/useWebSocket";
 
 export default function TopBar() {
@@ -144,6 +145,13 @@ export default function TopBar() {
             <Settings className="w-4 h-4" />
           </Button>
         </SettingsModal>
+        <UserSettingsDropdown user={{
+          id: 'demo-user',
+          email: 'trader@baqlabs.com',
+          firstName: 'BAQ',
+          lastName: 'Trader',
+          profileImageUrl: undefined
+        }} />
       </div>
     </div>
   );

@@ -11,15 +11,11 @@ interface CodeEditorProps {
 export default function CodeEditor({ value, onChange, language = "javascript", readOnly = false }: CodeEditorProps) {
   const editorRef = useRef<any>(null);
 
-  // Debug logging
-  console.log('CodeEditor rendered with value length:', value?.length || 0);
-  console.log('Value preview:', value?.substring(0, 100) || 'No value');
-  console.log('CodeEditor container dimensions');
+  // Debug logging (disabled for production)
+  // console.log('CodeEditor rendered with value length:', value?.length || 0);
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
-    console.log('Monaco editor mounted successfully');
-    console.log('Monaco mounted with value:', editor.getValue().substring(0, 100));
 
     // Configure custom theme for trading platform
     monaco.editor.defineTheme('trading-dark', {
@@ -101,7 +97,6 @@ export default function CodeEditor({ value, onChange, language = "javascript", r
   };
 
   const handleEditorChange = (newValue: string | undefined) => {
-    console.log('Editor value changed, new length:', newValue?.length || 0);
     if (newValue !== undefined && onChange) {
       onChange(newValue);
     }
@@ -184,7 +179,7 @@ export default function CodeEditor({ value, onChange, language = "javascript", r
           </div>
         }
         beforeMount={(monaco) => {
-          console.log('Monaco is about to mount');
+          // Monaco setup
         }}
       />
     </div>

@@ -472,6 +472,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Backup & Restore endpoints
+  app.get('/api/backup/export', async (req, res) => {
+    try {
+      const strategies = await storage.getAllStrategies();
+      const datasets = await storage.getAllDatasets();
+      const backtestRuns = await storage.getAllBacktestRuns();
+      
+      const backup = {
+        version: '1.0',
+        timestamp: new Date().toISOString(),
+        data: {
+          strategies,
+          datasets,
+          backtestRuns
+        }
+      };
+      
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', `attachment; filename="baq-labs-backup-${new Date().toISOString().split('T')[0]}.json"`);
+      res.json(backup);
+    } catch (error) {
+      console.error('Error creating backup:', error);
+      res.status(500).json({ error: 'Failed to create backup' });
+    }
+  });
+
+  app.post('/api/backup/import', async (req, res) => {
+    try {
+      const backup = req.body;
+      
+      if (!backup.data || !backup.version) {
+        return res.status(400).json({ error: 'Invalid backup format' });
+      }
+      
+      // Import strategies
+      if (backup.data.strategies) {
+        for (const strategy of backup.data.strategies) {
+          try {
+            await storage.createStrategy({
+              name: strategy.name,
+              code: strategy.code,
+              parameters: strategy.parameters
+            });
+          } catch (error) {
+            console.log(`Strategy ${strategy.name} already exists, skipping`);
+          }
+        }
+      }
+      
+      res.json({ success: true, message: 'Backup restored successfully' });
+    } catch (error) {
+      console.error('Error restoring backup:', error);
+      res.status(500).json({ error: 'Failed to restore backup' });
+    }
+  });
+
+  // User profile endpoints
+  app.get('/api/auth/user', async (req, res) => {
+    // Mock user for demo
+    res.json({
+      id: 'demo-user',
+      email: 'trader@baqlabs.com',
+      firstName: 'BAQ',
+      lastName: 'Trader',
+      profileImageUrl: null
+    });
+  });
+
+  app.put('/api/auth/profile', async (req, res) => {
+    try {
+      // In a real app, this would update the user profile
+      const { firstName, lastName, email } = req.body;
+      res.json({ 
+        id: 'demo-user',
+        email,
+        firstName,
+        lastName,
+        profileImageUrl: null
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update profile' });
+    }
+  });
+
+  app.get('/api/logout', (req, res) => {
+    // Mock logout - in real app would clear session
+    res.redirect('/');
+  });
+
   return httpServer;
 }
 
