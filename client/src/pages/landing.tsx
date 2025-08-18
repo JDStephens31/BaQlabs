@@ -70,7 +70,7 @@ export default function LandingPage() {
             />
             <Button 
               type="submit"
-              className="bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-white hover:from-purple-600 hover:via-pink-600 hover:to-blue-600 px-8 py-2 rounded-md font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="bg-gradient-to-r from-white to-pink-100 text-gray-800 hover:from-pink-50 hover:to-pink-200 px-8 py-2 rounded-md font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border-2 border-pink-200"
             >
               Join Waitlist
             </Button>
