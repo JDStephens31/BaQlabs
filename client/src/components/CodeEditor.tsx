@@ -11,8 +11,13 @@ interface CodeEditorProps {
 export default function CodeEditor({ value, onChange, language = "javascript", readOnly = false }: CodeEditorProps) {
   const editorRef = useRef<any>(null);
 
+  // Debug logging
+  console.log('CodeEditor rendered with value length:', value?.length || 0);
+  console.log('Value preview:', value?.substring(0, 100) || 'No value');
+
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
+    console.log('Monaco editor mounted successfully');
 
     // Configure custom theme for trading platform
     monaco.editor.defineTheme('trading-dark', {
@@ -94,6 +99,7 @@ export default function CodeEditor({ value, onChange, language = "javascript", r
   };
 
   const handleEditorChange = (newValue: string | undefined) => {
+    console.log('Editor value changed, new length:', newValue?.length || 0);
     if (newValue !== undefined && onChange) {
       onChange(newValue);
     }
@@ -172,9 +178,15 @@ export default function CodeEditor({ value, onChange, language = "javascript", r
         loading={
           <div className="flex items-center justify-center h-full text-muted-foreground">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-current"></div>
-            <span className="ml-3">Loading editor...</span>
+            <span className="ml-3">Loading Monaco editor...</span>
           </div>
         }
+        beforeMount={(monaco) => {
+          console.log('Monaco is about to mount');
+        }}
+        onMount={(editor, monaco) => {
+          console.log('Monaco mounted with value:', editor.getValue().substring(0, 100));
+        }}
       />
     </div>
   );
