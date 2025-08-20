@@ -253,7 +253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Read current submissions
       const submissionsPath = process.env.NODE_ENV === 'production' 
         ? path.resolve(import.meta.dirname, '..', 'public', 'waitlist-submissions.json')
-        : path.resolve(import.meta.dirname, '..', 'waitlist-submissions.json');
+        : path.resolve(import.meta.dirname, '..', 'dist', 'public', 'waitlist-submissions.json');
       let data;
       
       try {
@@ -301,7 +301,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const submissionsPath = process.env.NODE_ENV === 'production' 
         ? path.resolve(import.meta.dirname, '..', 'public', 'waitlist-submissions.json')
-        : path.resolve(import.meta.dirname, '..', 'waitlist-submissions.json');
+        : path.resolve(import.meta.dirname, '..', 'dist', 'public', 'waitlist-submissions.json');
       const fileContent = await fs.promises.readFile(submissionsPath, 'utf-8');
       const data = JSON.parse(fileContent);
       
