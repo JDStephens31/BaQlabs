@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Play, Square, RotateCcw, Settings } from "lucide-react";
 import SettingsModal from "@/components/SettingsModal";
 import UserSettingsDropdown from "@/components/UserSettingsDropdown";
-import { useWebSocket } from "@/hooks/useWebSocket";
+
 
 export default function TopBar() {
   const [currentStrategy, setCurrentStrategy] = useState("Maker Queue Aware");
@@ -14,26 +14,25 @@ export default function TopBar() {
   const [backtestProgress, setBacktestProgress] = useState(0);
   const [status, setStatus] = useState<'Ready' | 'Running' | 'Completed' | 'Error'>('Ready');
 
-  // WebSocket connection for coordinating with LeftSidebar
-  const { connectionStatus, sendMessage } = useWebSocket('', {
-    onMessage: (data) => {
-      switch (data.type) {
-        case 'backtestProgress':
-          setBacktestProgress(data.data.progress);
-          setStatus(data.data.status === 'completed' ? 'Completed' : 'Running');
-          setIsBacktestRunning(data.data.status !== 'completed');
-          break;
-        case 'backtestCompleted':
-          setStatus('Completed');
-          setIsBacktestRunning(false);
-          break;
-        case 'backtestError':
-          setStatus('Error');
-          setIsBacktestRunning(false);
-          break;
+  // Simulated backtest progress for demo
+  const simulateBacktest = () => {
+    setIsBacktestRunning(true);
+    setBacktestProgress(0);
+    setStatus('Running');
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress >= 100) {
+        progress = 100;
+        setStatus('Completed');
+        setIsBacktestRunning(false);
+        clearInterval(interval);
+      } else {
+        setBacktestProgress(Math.round(progress));
       }
-    }
-  });
+    }, 500);
+  };
 
   useEffect(() => {
     const handleItemSelected = (event: any) => {
@@ -52,26 +51,12 @@ export default function TopBar() {
   }, []);
 
   const startBacktest = () => {
-    setIsBacktestRunning(true);
-    setBacktestProgress(0);
-    setStatus('Running');
-    
-    sendMessage({
-      type: 'startBacktest',
-      data: {
-        strategyId: selectedStrategyId,
-        datasetId: selectedDatasetId
-      }
-    });
+    simulateBacktest();
   };
 
   const stopBacktest = () => {
     setIsBacktestRunning(false);
     setStatus('Ready');
-    
-    sendMessage({
-      type: 'stopBacktest'
-    });
   };
 
   const resetBacktest = () => {
@@ -97,7 +82,7 @@ export default function TopBar() {
           size="sm" 
           className="bg-green-600 hover:bg-green-700"
           onClick={startBacktest}
-          disabled={isBacktestRunning || connectionStatus !== 'Connected'}
+          disabled={isBacktestRunning}
         >
           <Play className="w-4 h-4 mr-1" />
           {isBacktestRunning ? `Running ${backtestProgress}%` : 'Start'}
@@ -132,14 +117,7 @@ export default function TopBar() {
             'text-red-600'
           }`}>{status}</span>
         </div>
-        <div className="text-sm">
-          <span className="text-muted-foreground">WS:</span>
-          <span className={`ml-1 font-medium ${
-            connectionStatus === 'Connected' ? 'text-green-600' :
-            connectionStatus === 'Connecting' ? 'text-yellow-600' :
-            'text-red-600'
-          }`}>{connectionStatus}</span>
-        </div>
+
         <SettingsModal>
           <Button size="sm" variant="ghost">
             <Settings className="w-4 h-4" />

@@ -14,7 +14,7 @@ export default function LandingPage() {
     if (email) {
       toast({
         title: "Welcome to the waitlist!",
-        description: "We'll notify you when BAO LABS launches.",
+        description: "We'll notify you when BaQ LABS launches.",
       });
       setEmail("");
     }

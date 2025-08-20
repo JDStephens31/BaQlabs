@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAO LABS - Advanced Backtesting Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <style>
+        ::-webkit-scrollbar { 
+            display: none;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+        }
+        html, body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ["Inter", "sans-serif"],
+                        sans: ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        };
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap">
+</head>
+<body class="bg-white font-sans">
+    <main id="mobile-waitlist-main" class="min-h-screen bg-white">
+        <header id="mobile-header" class="px-6 py-4 border-b border-gray-100">
+            <div class="flex items-center justify-center">
+                <div class="flex items-center space-x-3">
+                    <img src="../attached_assets/baqtest labs_1755480352109.png" alt="BAO LABS Logo" class="h-16 w-auto">
+                </div>
+            </div>
+        </header>
+
+        <section id="hero-section" class="px-6 py-12 text-center">
+            <div class="mb-8">
+                <img class="w-32 h-32 mx-auto mb-6 rounded-2xl shadow-sm" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/64e4649cd4-e3283cf8f73b31b73312.png" alt="modern minimalist trading chart dashboard interface on mobile screen, clean white background, professional design">
+            </div>
+            
+            <h1 class="text-3xl font-bold text-black mb-4 leading-tight">
+                Join the Waitlist
+            </h1>
+            
+            <p class="text-gray-600 text-lg mb-8 leading-relaxed px-2">
+                Be the first to access our advanced backtesting platform and unlock powerful trading insights.
+            </p>
+        </section>
+
+        <section id="waitlist-form" class="px-6 mb-12">
+            <div class="bg-white border-2 border-gray-200 rounded-2xl p-6">
+                <form class="space-y-4">
+                    <div>
+                        <input type="email" placeholder="Enter your email address" class="w-full px-4 py-4 border border-gray-300 rounded-xl text-black placeholder-gray-500 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors">
+                    </div>
+                    
+                    <div>
+                        <input type="text" placeholder="Your name" class="w-full px-4 py-4 border border-gray-300 rounded-xl text-black placeholder-gray-500 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors">
+                    </div>
+
+                    <button type="submit" class="w-full bg-black text-white py-4 px-6 rounded-xl font-semibold hover:bg-gray-900 transition-colors flex items-center justify-center space-x-2">
+                        <span>Join Waitlist</span>
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="features-preview" class="px-6 mb-12">
+            <div class="space-y-4">
+                <div id="feature-card-1" class="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-start space-x-4">
+                    <div class="bg-black rounded-lg p-2 flex-shrink-0">
+                        <i class="fa-solid fa-chart-line text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-black mb-1">Real-Time Market Data</h3>
+                        <p class="text-gray-600 text-sm">MBO data via CSV with live market feeds</p>
+                    </div>
+                </div>
+
+                <div id="feature-card-2" class="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-start space-x-4">
+                    <div class="bg-black rounded-lg p-2 flex-shrink-0">
+                        <i class="fa-solid fa-code text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-black mb-1">Strategy Development</h3>
+                        <p class="text-gray-600 text-sm">Custom algorithm builder with advanced scripting</p>
+                    </div>
+                </div>
+
+                <div id="feature-card-3" class="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-start space-x-4">
+                    <div class="bg-black rounded-lg p-2 flex-shrink-0">
+                        <i class="fa-solid fa-layer-group text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-black mb-1">Queue-Modeling</h3>
+                        <p class="text-gray-600 text-sm">Realistic order book simulation with depth analysis</p>
+                    </div>
+                </div>
+
+                <div id="feature-card-4" class="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-start space-x-4">
+                    <div class="bg-black rounded-lg p-2 flex-shrink-0">
+                        <i class="fa-solid fa-brain text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-black mb-1">ML Model Training</h3>
+                        <p class="text-gray-600 text-sm">XGBoost integration for predictive analytics</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stats-section" class="px-6 mb-12">
+            <div class="grid grid-cols-3 gap-4">
+                <div id="stat-1" class="text-center py-4">
+                    <div class="text-2xl font-bold text-black mb-1">2,847</div>
+                    <div class="text-xs text-gray-600 uppercase tracking-wide">On Waitlist</div>
+                </div>
+                <div id="stat-2" class="text-center py-4 border-l border-r border-gray-200">
+                    <div class="text-2xl font-bold text-black mb-1">15+</div>
+                    <div class="text-xs text-gray-600 uppercase tracking-wide">Markets</div>
+                </div>
+                <div id="stat-3" class="text-center py-4">
+                    <div class="text-2xl font-bold text-black mb-1">99.9%</div>
+                    <div class="text-xs text-gray-600 uppercase tracking-wide">Uptime</div>
+                </div>
+            </div>
+        </section>
+
+        <footer id="mobile-footer" class="px-6 py-8 border-t border-gray-100 text-center">
+            <p class="text-gray-500 text-sm mb-4">
+                We'll notify you when we launch. No spam, ever.
+            </p>
+        </footer>
+    </main>
+</body>
+</html> 

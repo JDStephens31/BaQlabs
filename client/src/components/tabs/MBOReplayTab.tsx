@@ -10,7 +10,7 @@ import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Play, Pause, Square, SkipForward, SkipBack, Clock, BarChart3, TrendingUp, Eye } from "lucide-react";
-import { useWebSocket } from "@/hooks/useWebSocket";
+
 
 export default function MBOReplayTab() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -76,14 +76,12 @@ export default function MBOReplayTab() {
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // WebSocket connection for live market data
-  const { connectionStatus, sendMessage } = useWebSocket('', {
-    onMessage: (data) => {
-      if (data.type === 'mboUpdate' && isPlaying) {
-        updateOrderBook(data.data);
-      }
+  // Simulated market data for demo
+  const simulateMarketData = () => {
+    if (isPlaying) {
+      updateOrderBook();
     }
-  });
+  };
 
   // Generate realistic NQ order book update
   const generateOrderBookUpdate = () => {

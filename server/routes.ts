@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
+import path from "path";
+import fs from "fs";
 import { storage } from "./storage";
 import { insertStrategySchema, insertBacktestRunSchema } from "@shared/schema";
 
@@ -233,6 +235,81 @@ function generateNQMarketData() {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
+  
+  // Serve the waitlist page
+  app.get('/waitlist', (req, res) => {
+    res.sendFile(path.resolve(import.meta.dirname, '..', 'client', 'waitlist.html'));
+  });
+
+  // Waitlist submission endpoint
+  app.post('/api/waitlist/submit', async (req, res) => {
+    try {
+      const { name, email } = req.body;
+      
+      if (!name || !email) {
+        return res.status(400).json({ error: 'Name and email are required' });
+      }
+
+      // Read current submissions
+      const submissionsPath = path.resolve(import.meta.dirname, '..', 'waitlist-submissions.json');
+      let data;
+      
+      try {
+        const fileContent = await fs.promises.readFile(submissionsPath, 'utf-8');
+        data = JSON.parse(fileContent);
+      } catch (error) {
+        // If file doesn't exist or is invalid, start fresh
+        data = { submissions: [], totalCount: 0, lastUpdated: null };
+      }
+
+      // Check if email already exists
+      const existingSubmission = data.submissions.find((sub: any) => sub.email === email);
+      if (existingSubmission) {
+        return res.status(409).json({ error: 'Email already registered' });
+      }
+
+      // Add new submission
+      const newSubmission = {
+        id: Date.now().toString(),
+        name,
+        email,
+        submittedAt: new Date().toISOString()
+      };
+
+      data.submissions.push(newSubmission);
+      data.totalCount = data.submissions.length;
+      data.lastUpdated = new Date().toISOString();
+
+      // Write back to file
+      await fs.promises.writeFile(submissionsPath, JSON.stringify(data, null, 2));
+
+      res.status(201).json({ 
+        success: true, 
+        message: 'Successfully joined the waitlist!',
+        totalCount: data.totalCount
+      });
+    } catch (error) {
+      console.error('Error submitting to waitlist:', error);
+      res.status(500).json({ error: 'Failed to submit to waitlist' });
+    }
+  });
+
+  // Get waitlist stats endpoint
+  app.get('/api/waitlist/stats', async (req, res) => {
+    try {
+      const submissionsPath = path.resolve(import.meta.dirname, '..', 'waitlist-submissions.json');
+      const fileContent = await fs.promises.readFile(submissionsPath, 'utf-8');
+      const data = JSON.parse(fileContent);
+      
+      res.json({ 
+        totalCount: data.totalCount,
+        lastUpdated: data.lastUpdated
+      });
+    } catch (error) {
+      res.json({ totalCount: 0, lastUpdated: null });
+    }
+  });
+
   
   // Strategy management endpoints
   app.get('/api/strategies', async (req, res) => {

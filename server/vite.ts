@@ -52,14 +52,21 @@ export async function setupVite(app: Express, server: Server) {
         "index.html",
       );
 
-      // always reload the index.html file from disk incase it changes
+      // Check if the HTML file contains React content or is static
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(
-        `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`,
-      );
-      const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      
+      if (template.includes('src="/src/main.tsx"')) {
+        // This is a React app, process it normally
+        template = template.replace(
+          `src="/src/main.tsx"`,
+          `src="/src/main.tsx?v=${nanoid()}"`,
+        );
+        const page = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      } else {
+        // This is a static HTML file, serve it directly
+        res.status(200).set({ "Content-Type": "text/html" }).end(template);
+      }
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);
