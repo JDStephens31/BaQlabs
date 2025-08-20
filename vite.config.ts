@@ -16,7 +16,7 @@ export default defineConfig({
         ]
       : []),
   ],
-  base: "/BaQlabs",
+  base: process.env.NODE_ENV === "production" ? "/BaQlabs" : "/",
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
